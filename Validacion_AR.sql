@@ -2,12 +2,12 @@
 			 @Walmart int = 0
 			,@FacturasWalmart int = 0
 			,@Soriana int = 0
-			,@Cityfresko int = 0
+			,@Cityfresko int = 1
 			,@HEB int = 0
 			,@Sanborns int = 0
 			,@OXXO int = 0
 			,@OXXO_Detalle int = 0
-			,@FechaSubida date = '2021-05-18'
+			,@FechaSubida date = '2021-06-04'
 			,@1000Registros int = 0
 			,@registrosFechaSub int  = 1
 

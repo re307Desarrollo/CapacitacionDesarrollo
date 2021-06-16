@@ -41,7 +41,7 @@ where 1 = 1
     --and Sp_Padre like '%Empty%'
     --and Sp = 'Subir_AcreditacionPortalesWeb'
     --and sp like '%CR%'
-	and sp like '%Subir_CR%'
+	--and sp like '%Subir_CR%'
     --and sp like '%CCC%' 
     --and sp like '%LP%'
     --and Sp like '%SUBIR%'
@@ -61,7 +61,7 @@ where 1 = 1
 	/*Ventas de Portal End*/
 
 
-	--and Sp_Padre = 'Automatizacion_Chedraui'
+	and Sp_Padre = 'Automatizacion_Chedraui'
 
 	--and Sp = 'TresxTres_AlimentacionDevolucionesPortal_AsignacionFechaRecoleccion_1'
 	--and Sp = 'Subir_PC'
