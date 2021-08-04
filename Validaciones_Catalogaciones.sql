@@ -7,7 +7,7 @@ declare
 		,@Sanborns int = 0
 		,@Soriana int = 0
 		,@Cityfresko int = 0
-		,@Chedraui int = 1
+		,@Chedraui int = 0
 
 
 if @Walmart = 1

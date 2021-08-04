@@ -1,7 +1,7 @@
 ﻿declare
 	--Validacion Pagos Toks
 	 @Pagos int = 0
-	,@FechaPagos date = '2021-03-12'
+	,@FechaPagos date = '2021-06-23'
 	--,@Pago int = '1219432'
 	,@Toks int = 0
 
@@ -11,19 +11,20 @@
 	,@FechaDevolucion int = 1
 	--,@menosDias int = -1
 	,@FechaSubida date = DATEADD(dd,0,GETDATE())-- '2020-09-07'
+	--,@FechaSubida date = '2021-01-26'
 	--Cadena
 	,@Walmart int = 0
-	,@Soriana int = 0
 	,@Sanbons int = 0
-	,@Liverpool int = 0--
+	,@Liverpool int = 0
 	,@Liverpool_SKU int = 0
-	,@Chedraui_24Hras int = 0---
-	,@Chedraui_Sucursal int = 0---
-	,@7eleven int = 0
-	,@7eleven_Cargos int = 0---
+	,@Chedraui_24Hras int = 0--
+	,@Chedraui_Sucursal int = 0--
 	,@Cityfresko int = 0
 	,@HEB int = 0
 	,@OXXO int = 0
+	,@Soriana int = 0
+	,@7eleven int = 0
+	,@7eleven_Cargos int = 0---
 
 
 

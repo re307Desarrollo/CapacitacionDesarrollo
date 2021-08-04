@@ -54,7 +54,7 @@ and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transac
 
 
 
-select distinct Sucursal, Folio from Devoluciones_PromotoraMusical a
+select distinct Sucursal, Folio from Devoluciones_OperadoraSierra a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = @Folio
@@ -64,7 +64,7 @@ where 1 = 1
 			and a.Sucursal = b.Sucursal
 			)
 
-select * from Devoluciones_PromotoraMusical a
+select * from Devoluciones_OperadoraSierra a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = '456'
@@ -75,7 +75,7 @@ where 1 = 1
 			)
 
 
-select * from Devoluciones_PromotoraMusical_Reporte_Acumulado a
+select * from Devoluciones_OperadoraSierra_Reporte_Acumulado a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -87,7 +87,7 @@ where 1 = 1
 			--and a.Sucursal = b.Sucursal
 			)
 
-select * from Devoluciones_PromotoraMusical_Reporte_Acumulado_porItem a
+select * from Devoluciones_OperadoraSierra_Reporte_Acumulado_porItem a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -119,7 +119,7 @@ where 1 = 1
 if @deleteDropbox = 1
 	begin
 		delete a
-		from Devoluciones_SotanoCoy a
+		from Devoluciones_OperadoraSierra a
 		where 1 = 1
 			--and Sucursal = @Sucursal
 			--and Folio = @Folio
@@ -129,7 +129,7 @@ if @deleteDropbox = 1
 					and a.Sucursal = b.Sucursal)
 
 		delete a
-		from Devoluciones_SotanoCoy_Reporte_Acumulado a
+		from Devoluciones_OperadoraSierra_Reporte_Acumulado a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
@@ -141,7 +141,7 @@ if @deleteDropbox = 1
 					)
 
 		delete a
-		from Devoluciones_SotanoCoy_Reporte_Acumulado_porItem a
+		from Devoluciones_OperadoraSierra_Reporte_Acumulado_porItem a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio

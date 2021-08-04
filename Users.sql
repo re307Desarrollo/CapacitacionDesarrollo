@@ -1,9 +1,9 @@
 ﻿---Correr en servidor de apps
 use [Global]
 declare 
-	@Nombre varchar(max) = 'Yessenia' --Nombre del usuario 
+	@Nombre varchar(max) = 'yesseni' --Nombre del usuario 
 			  ,@VERIFICAR INT = 1 --1 verificas, 2 desbloqueas
-		,@Accion varchar(max)= 'd' --F:Logistica Directa --D:Logistica Inversa
+		,@Accion varchar(max)= 'f' --F:Logistica Directa --D:Logistica Inversa
 if @VERIFICAR = 1
 begin
 	select * from Control_Entregas_Usuarios

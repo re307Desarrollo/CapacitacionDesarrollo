@@ -61,7 +61,7 @@ where 1 = 1
 	/*Ventas de Portal End*/
 
 
-	and Sp_Padre = 'Automatizacion_Chedraui'
+	--and Sp_Padre = 'Automatizacion_Chedraui'
 
 	--and Sp = 'TresxTres_AlimentacionDevolucionesPortal_AsignacionFechaRecoleccion_1'
 	--and Sp = 'Subir_PC'
