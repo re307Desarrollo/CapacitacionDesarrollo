@@ -1,7 +1,7 @@
 ﻿---Correr en servidor de apps
 use [Global]
 declare 
-	@Nombre varchar(max) = 'yesseni' --Nombre del usuario 
+	@Nombre varchar(max) = 'saucedo' --Nombre del usuario 
 			  ,@VERIFICAR INT = 1 --1 verificas, 2 desbloqueas
 		,@Accion varchar(max)= 'f' --F:Logistica Directa --D:Logistica Inversa
 if @VERIFICAR = 1
@@ -21,7 +21,7 @@ begin
 		set SessionOpen = 'False'
 		where 1 = 1
 			and Nombre like '%'+ @Nombre +'%'
-			--and Usuario like '%'+ @Nombre +'%'
+			and Usuario like '%'+ @Nombre +'%'
 		and Tipo_Documento = 'Control Documental Facturas' --Logistica Directa
 		--and Tipo_Documento = 'Control Documental Devoluciones'  --Logistica Inversa
 	end

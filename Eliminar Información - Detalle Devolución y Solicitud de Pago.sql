@@ -13,7 +13,36 @@ declare
 	  @deletePago bit = 0
 	 ,@deleteDropbox bit = 0
 	 ,@deleteOracle bit = 0
+	 ,@Alimentar bit = 0
 
+if @Alimentar = 1
+begin
+	truncate table [EliminarDropbox]
+	create table #EliminarDropbox(
+		Sucursal varchar(max)
+		,Oracle int
+		,Folio varchar(max)
+	)
+	BULK INSERT #EliminarDropbox FROM 'H:\Desarrollo\EliminarDropbox.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 2);
+	
+	insert into EliminarDropbox
+	select 
+		a.Sucursal
+		,a.Oracle
+		,REPLACE(REPLACE(a.Folio,'á',''),' ','')
+		,0
+	from #EliminarDropbox a
+	select * from EliminarDropbox
+	
+	--select * from #EliminarDropbox
+	drop table #EliminarDropbox
+	--update a
+	--	set 
+	--		a.Folio = REPLACE(REPLACE(a.Folio,'á',''),' ','')
+	--from EliminarDropbox a
+end
+
+--select COUNT(*) from EliminarDropbox
 declare 
 	 @Oracle varchar(max) = ''
 	,@Folio varchar(max) = ''
@@ -54,28 +83,30 @@ and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transac
 
 
 
-select distinct Sucursal, Folio from Devoluciones_OperadoraSierra a
+select distinct Sucursal, Folio from Devoluciones_AeroBoutiques a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = @Folio
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
-			and a.Folio = b.Folio
+			and a.Folio like '%'+b.Folio+'%'
+			--and a.Folio = b.Folio
 			and a.Sucursal = b.Sucursal
 			)
 
-select * from Devoluciones_OperadoraSierra a
+select * from Devoluciones_AeroBoutiques a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = '456'
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
-			and a.Folio = b.Folio
+			and a.Folio like '%'+b.Folio+'%'
+			--and a.Folio = b.Folio
 			and a.Sucursal = b.Sucursal
 			)
 
 
-select * from Devoluciones_OperadoraSierra_Reporte_Acumulado a
+select * from Devoluciones_AeroBoutiques_Reporte_Acumulado a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -83,11 +114,12 @@ where 1 = 1
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
 			and a.cliente = b.Oracle
-			and a.Folio = b.Folio
+			and a.Folio like '%'+b.Folio+'%'
+			--and a.Folio = b.Folio
 			--and a.Sucursal = b.Sucursal
 			)
 
-select * from Devoluciones_OperadoraSierra_Reporte_Acumulado_porItem a
+select * from Devoluciones_AeroBoutiques_Reporte_Acumulado_porItem a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -95,7 +127,8 @@ where 1 = 1
 		and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
 			and a.cliente = b.Oracle
-			and a.Folio = b.Folio
+			and a.Folio like '%'+b.Folio+'%'
+			--and a.Folio = b.Folio
 			--and a.Sucursal = b.Sucursal
 			)
 
@@ -119,36 +152,39 @@ where 1 = 1
 if @deleteDropbox = 1
 	begin
 		delete a
-		from Devoluciones_OperadoraSierra a
+		from Devoluciones_AeroBoutiques a
 		where 1 = 1
 			--and Sucursal = @Sucursal
 			--and Folio = @Folio
 			and exists (select * from [EliminarDropbox] b
 				where 1 = 1	
-					and a.Folio = b.Folio
+					and a.Folio like '%'+b.Folio+'%'
+					--and a.Folio = b.Folio
 					and a.Sucursal = b.Sucursal)
 
 		delete a
-		from Devoluciones_OperadoraSierra_Reporte_Acumulado a
+		from Devoluciones_AeroBoutiques_Reporte_Acumulado a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
 			and exists (select * from [EliminarDropbox] b
 				where 1 = 1	
 					and a.cliente = b.Oracle
-					and a.Folio = b.Folio
+					and a.Folio like '%'+b.Folio+'%'
+					--and a.Folio = b.Folio
 					--and a.Sucursal = b.Sucursal
 					)
 
 		delete a
-		from Devoluciones_OperadoraSierra_Reporte_Acumulado_porItem a
+		from Devoluciones_AeroBoutiques_Reporte_Acumulado_porItem a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
 				and exists (select * from [EliminarDropbox] b
 				where 1 = 1	
 					and a.cliente = b.Oracle
-					and a.Folio = b.Folio
+					and a.Folio like '%'+b.Folio+'%'
+					--and a.Folio = b.Folio
 					--and a.Sucursal = b.Sucursal
 					)
 	end

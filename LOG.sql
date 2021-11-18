@@ -61,13 +61,15 @@ where 1 = 1
 	/*Ventas de Portal End*/
 
 
-	--and Sp_Padre = 'Automatizacion_Chedraui'
+	and Sp_Padre = 'Automatizacion_Chedraui'
+	--and Tabla = 'Devoluciones_Soriana'
 
 	--and Sp = 'TresxTres_AlimentacionDevolucionesPortal_AsignacionFechaRecoleccion_1'
 	--and Sp = 'Subir_PC'
 	--and Sp = 'Subir_VP'
 	--and Sp_Padre = 'Subir_VP'
 	--and Sp = 'TresxTres_CodigosSeguridad_3'---<---
+	--and Sp = 'Devoluciones_Pagos_Subir' or Sp_Padre = 'Devoluciones_Master_Subir'
 	--and Sp_Padre = 'Devoluciones_Master_Subir'
 	--and Sp = 'Subir_Z_AR_MatrizDocumentos'
 	--and Sp = 'Subir_Z_AR_MatrizDocumentos_AsignacionDocumentosIntermex'

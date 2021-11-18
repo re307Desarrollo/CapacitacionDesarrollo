@@ -14,15 +14,15 @@
 	--,@FechaSubida date = '2021-01-26'
 	--Cadena
 	,@Walmart int = 0
-	,@Sanbons int = 0
+	,@Soriana int = 0
 	,@Liverpool int = 0
 	,@Liverpool_SKU int = 0
-	,@Chedraui_24Hras int = 0--
-	,@Chedraui_Sucursal int = 0--
+	,@Sanbons int = 0
+	,@Chedraui_24Hras int = 0
+	,@Chedraui_Sucursal int = 0
 	,@Cityfresko int = 0
 	,@HEB int = 0
 	,@OXXO int = 0
-	,@Soriana int = 0
 	,@7eleven int = 0
 	,@7eleven_Cargos int = 0---
 
@@ -78,19 +78,40 @@ begin
 	end
 	if @Soriana = 1
 	begin
+			select 'CodigoBarrasDuplicados' [Razon ejecucion]
 			SELECT top 1000 
 			 Folio
 			,Sucursal
 			,CodigoBarras
 			,Count (Descripcion) Contador
-			FROM Z_DV_Soriana
+			,FechaSuida
+			FROM Z_DV_Soriana 
 			where 1=1
 			and CONVERT(date,FechaSuida) = @FechaSubida
 			group by  Folio
 				 ,Sucursal
 				 ,CodigoBarras
+				 ,FechaSuida
 			having COUNT (Descripcion) >1
-			order by Contador desc
+			order by FechaSuida desc
+			select 'Folios Subios' [Razon ejecucion]
+			select --top 1000
+				a.Folio
+				,a.Sucursal
+				,a.FechaDev
+				,COUNT(a.Descripcion) Total_Subido
+				,SUM(CONVERT(float,REPLACE(REPLACE(REPLACE(a.CostoN,'$',''),',',''),'"','')))Total_Detalle
+				,a.Importe_Cab
+				,a.FechaSuida
+			from Z_DV_Soriana a
+			where 1 = 1
+				and CONVERT(date,a.FechaSuida) = @FechaSubida
+			group by a.Folio
+				,a.Sucursal
+				,a.Importe_Cab
+				,a.FechaDev
+				,a.FechaSuida
+			order by a.FechaSuida desc
 	end
 
 	if @OXXO = 1
@@ -195,11 +216,11 @@ begin
 	end 
 	if @Walmart = 1
 	begin 
-			select Tienda
-						  , Folio
-						  , DET_UPC
-						  , COUNT (DET_Desc) Contador
-		from Z_DV_Pendientes_Walmart
+		select Tienda
+			, Folio
+			, DET_UPC
+			, COUNT (DET_Desc) Contador
+		from Z_DV_Pendientes_Walmart a
 		where 1=1
 		and convert(date,FechaSubida) = @FechaSubida
 		group by Tienda,
@@ -234,6 +255,7 @@ if @FechaDevolucion = 1
 	SELECT  
 		Factura,
 		Tienda,
+		FechaRecibo,
 		Base,
 		Folio,
 		Importe,
@@ -261,7 +283,7 @@ if @FechaDevolucion = 1
 
 	if @Soriana = 1
 	BEGIN 
-	
+	select 'Total de registros ingresados' [Razon ejecucion]
 	SELECT 
 		Folio,
 		Sucursal,

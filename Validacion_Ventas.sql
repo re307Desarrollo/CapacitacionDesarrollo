@@ -3,13 +3,13 @@ declare
 	 @FechaHora int = 1
 	,@Fecha int = 0
 	,@FechaVenta int = 1
-	--Cadenas
-	,@Walmart int = 0                                                                                                                                                                                                                                                                                                                                                 
-	,@Sanborns int =  0
-	,@Liverpool int = 0--
-	,@Chedraui int = 0---
+	--Cadenas10
+	,@Walmart int = 0
+	,@Sanborns int = 0
+	,@Liverpool int = 0
+	,@Chedraui int = 0
 	,@Cityfresko int = 0
-	,@Heb int = 0--
+	,@Heb int = 0
 	,@Soriana int = 0
 
 if @FechaHora = 1

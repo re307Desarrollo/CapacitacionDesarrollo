@@ -1,5 +1,5 @@
 ﻿declare 
-	@FileName varchar(max) = '9'
+	@FileName varchar(max) = '20'
 	,@Valida int = 1
 	,@SubeInformacion int = 0
 

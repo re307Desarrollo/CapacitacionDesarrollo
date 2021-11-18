@@ -1,13 +1,13 @@
 ﻿declare
-			 @Walmart int = 0
-			,@FacturasWalmart int = 0--
-			,@Soriana int = 0
+			@FechaSubida date = DATEADD(dd,0,GETDATE())--'2021-10-13'
+			,@Walmart int = 0
+			,@FacturasWalmart int = 0
 			,@Cityfresko int = 0
 			,@HEB int = 0
 			,@Sanborns int = 0
+			,@Soriana int = 0
 			,@OXXO int = 0
 			,@OXXO_Detalle int = 0
-			,@FechaSubida date = '2021-07-16'
 			,@1000Registros int = 0
 			,@registrosFechaSub int  = 1
 
@@ -15,7 +15,7 @@
 
 -----------------************************--------------------
 -----------------Acuses de Recibo-------------------------
-
+select @FechaSubida FechaConsulta
 if @1000Registros = 1
 begin
 	if @Walmart = 1
