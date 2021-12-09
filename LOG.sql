@@ -61,7 +61,7 @@ where 1 = 1
 	/*Ventas de Portal End*/
 
 
-	and Sp_Padre = 'Automatizacion_Chedraui'
+	and Sp_Padre = 'Automatizacion_Chedraui' or Sp like '%Automatizacion_Liverpool_SKU%'
 	--and Tabla = 'Devoluciones_Soriana'
 
 	--and Sp = 'TresxTres_AlimentacionDevolucionesPortal_AsignacionFechaRecoleccion_1'

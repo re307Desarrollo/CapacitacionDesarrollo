@@ -47,7 +47,7 @@ select
 	 ,a.Sucursal
 	 ,a.Importe_Cab
 	 ,sum(a.Cantidad) Total_Unidades
-	 ,sum(convert(float,REPLACE(REPLACE(a.CostoN,'$',''),',',''))) Importe_Detalle
+	 ,sum(ROUND(convert(float,REPLACE(REPLACE(a.CostoN,'$',''),',','')),3)) Importe_Detalle
 	 into #Z_DV_Soriana
 from Z_DV_Soriana a
 where 1 = 1
@@ -57,7 +57,7 @@ where 1 = 1
 		from #FoliosSorianaSolicitados b
 		where 1 = 1
 			and a.Folio = b.Folio
-			and a.FechaCalculo = b.Fecha
+			--and a.FechaCalculo = b.Fecha
 			and a.Sucursal = b.Sucursal
 	)
 group by 
@@ -89,11 +89,52 @@ where 1 = 1
 
 select 
 	a.Folio
+	,a.Sucursal
+	,a.Oracle
+	,a.[Importe Pago]
+	,a.[Importe Portales]
+	into #Devoluciones_Carga_ORACLE_Auditoria_SinIVA
+from Devoluciones_Carga_ORACLE_Auditoria_SinIVA a
+where 1 = 1
+	and exists(
+		select 
+			* 
+		from #FoliosSorianaSolicitados b
+		where 1 = 1
+			and a.Folio = b.Folio
+			and a.Sucursal = b.sucursal
+	)
+
+select 
+	a.folio
+	,a.Sucursal
+	,a.cliente
+	,sum(a.unidades)UnidatesTotalRAI
+	,sum(a.importe)ImporteTotalRAI
+	into #Devoluciones_Soriana_Reporte_Acumulado_porItem
+from Devoluciones_Soriana_Reporte_Acumulado_porItem a
+where 1 = 1
+	and exists(
+		select 
+			* 
+		from #FoliosSorianaSolicitados b
+		where 1 = 1
+			and a.Folio = b.Folio
+			and a.Sucursal = b.sucursal
+	)
+group by  
+	a.cliente
+	,a.folio
+	,a.Sucursal
+
+select 
+	a.Folio
 	,a.Sucursal 
 	,a.Fecha
 	,a.Total_Unidades
 	,a.Importe_Cabecero
 	,a.Importe_Detalle
+	,'//'[DeNuestroLado->]
 	,case
 		when b.Folio is not null then 'Esta en Z_DV_Soriana'
 		when c.Folio is not null then 'Z_DV_Soriana_DescargaIncompleta_'
@@ -129,6 +170,20 @@ select
 		when c.Folio is not null then c.ImporteDetalle
 		else 'No esta'
 	end Importe_Detalle_Tabla
+	,'//'[Pagos->]
+	,d.Folio
+	,d.Sucursal
+	,d.Oracle
+	,d.[Importe Pago]
+	,d.[Importe Portales]
+	,'//'[ReporteSoriana->]
+	,e.folio
+	,e.Sucursal
+	,e.cliente
+	,e.ImporteTotalRAI
+	,iif(d.Oracle != e.cliente,'Sí','No')DiferenteOracle
+	,'//'[MaestroSucursales->]
+	,ms.Oracle
 from #FoliosSorianaSolicitados a
 	left outer join #Z_DV_Soriana b
 	on a.Folio = b.Folio
@@ -136,11 +191,23 @@ from #FoliosSorianaSolicitados a
 	left outer join #Z_DV_Soriana_DescargaIncompleta_ c
 	on a.Folio = c.Folio
 	and a.Sucursal = c.sucursal
+	left outer join #Devoluciones_Carga_ORACLE_Auditoria_SinIVA d
+	on a.Folio = d.Folio
+	and a.Sucursal = d.Sucursal
+	left outer join #Devoluciones_Soriana_Reporte_Acumulado_porItem e
+	on a.Folio = e.folio
+	and a.Sucursal = e.Sucursal
+	left outer join Maestro_Sucursales ms
+	on a.Sucursal = ms.Sucursal
 where 1 = 1
+	and ms.Cadena = 'Soriana'
+	and ms.Modulo = 'Devolución'
 
 
 drop table #FoliosSorianSolicitados_Limpia,
 			#FoliosSorianSolicitados,
 			#FoliosSorianaSolicitados,
 			#Z_DV_Soriana,
-			#Z_DV_Soriana_DescargaIncompleta_
+			#Z_DV_Soriana_DescargaIncompleta_,
+			#Devoluciones_Carga_ORACLE_Auditoria_SinIVA,
+			#Devoluciones_Soriana_Reporte_Acumulado_porItem

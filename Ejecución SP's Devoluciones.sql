@@ -5,7 +5,7 @@
 ----EXEC [Devoluciones_HEB_Subir_2.0]
 ----EXEC [Devoluciones_Cityfresko_Subir_2.0]
 ----EXEC [Devoluciones_Sanborns_Subir_2.0]
-----EXEC [Devoluciones_Soriana_Subir_2.0] 
+----EXEC [Devoluciones_Soriana_Subir_2.0]
 ----EXEC [Devoluciones_Walmart_Subir_2.0] 
 ----EXEC [Devoluciones_Walmart_Subir_2.0_SinIVA]
 

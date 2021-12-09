@@ -1,5 +1,5 @@
 ﻿declare 
-	@serieConsulta varchar(max) = '7989'
+	@serieConsulta varchar(max) = '8000'
 	,@FechaConsulta date = DATEADD(dd,-1,GETDATE())
 	,@Logistica int = 0 --1:REC 2:REMI
 
@@ -26,6 +26,7 @@ if @Logistica = 2
 --LD 7958 2021-10-09
 --LD 7964 2021-10-16
 --LD 7970 2021-10-23
---LD 7976 2021-10-29
+--LD 7976 2021-10-30
+--LD 7998 2021-11-27
 
 --https://1drv.ms/u/s!AiuElLQ5TpfEh4pBEs20hQPD706t3w?e=m8as0j //subir los archivos a esta liga de onedriver, perdir acceso a Gio.
