@@ -90,8 +90,19 @@ begin
 			and a.Id = @IdOrdenFacturacionProcesar_Detalle
 			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 
+		--select 
+		--	'IMPUESTOSLINEAS|'+a.BaseImpuesto+'|'+b.Clave+'|'
+		--from OrdenFacturacion_CartaPorte_DetalleFactura a
+		--	left outer join Maestro_OrdenFacturacion_TipoImpuesto b
+		--	on a.Maestro_OrdenFacturacion_TipoImpuesto_Id = b.Id
+		--	left outer join Maestro_Ordenfact
+		--where 1 = 1
+		--	and a.Id = @IdOrdenFacturacionProcesar_Detalle
+		--	and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
 		insert into #Campote values
 		('IMPUESTOSLINEAS|20|002|Tasa|0.160000|3.2|T')
+
 		insert into #Campote values
 		('NUMPEDIMENTO|10 47 3807 8003832*10 47 3807 8003832*10 47 3807 8003832')
 
