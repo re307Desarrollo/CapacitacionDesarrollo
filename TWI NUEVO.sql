@@ -1,7 +1,7 @@
 ﻿declare 
-	@serieConsulta varchar(max) = '8000'
-	,@FechaConsulta date = DATEADD(dd,-1,GETDATE())
-	,@Logistica int = 0 --1:REC 2:REMI
+	@serieConsulta varchar(max) = '8010'
+	,@FechaConsulta date = DATEADD(dd,-2,GETDATE())
+	,@Logistica int = 1 --1:REC 2:REMI
 
 	select @FechaConsulta FechaConsulta,@serieConsulta Serie,(case @Logistica
 																	when 0 then 'Elije tipo'
