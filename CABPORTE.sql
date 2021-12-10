@@ -22,7 +22,7 @@ select --top 3
 	,ISNULL(e.Clave,'MET') MET
 	,ISNULL(a.LugarExpedicion,'LUGAREXPEDICION') LUGAREXPEDICION
 	,ISNULL(a.Confirmacion,'CONFI') CONFI
-	,'TI?' TI
+	--,'TI?' TI
 	,ISNULL(a.RFC_E,'RFC_E') RFC_E
 	,ISNULL(a.Nombre_E,'NOMBRE_E') NOMBRE_E
 	,ISNULL(h.Clave,'REGIMEN') REGIMEN
@@ -52,8 +52,9 @@ from OrdenFacturacion_CartaPorte_Cabecera a
 	left outer join Maestro_OrdenFacturacion_Regimen h
 	on a.Maestro_OrdenFacturacion_Regimen_Id = h.Id
 where 1 = 1
-	and a.IsProcessed is null
-	or a.IsProcessed = 0
+	and a.Id = 6
+	--and a.IsProcessed is null
+	--or a.IsProcessed = 0
 
 --select * from #Procesar_CAB
 
@@ -70,7 +71,7 @@ begin
 		'CABPORTE|'+a.SERIE+'|'+a.FOLIO+'|'+a.FECHAHORACOMP+
 		'|'+a.FO+'|'+a.CONDPAGO+'|'+a.SUBTOTAL+'|'+a.DESCUENTO+
 		'|'+a.MON+'|'+a.TIPOCAMBIO+'|'+a.TOTFACTURA+'|'+a.T+
-		'|'+a.MET+'|'+a.LUGAREXPEDICION+'|'+a.CONFI+'|'+a.TI+
+		'|'+a.MET+'|'+a.LUGAREXPEDICION+'|'+a.CONFI+'|'+--a.TI+
 		'|'+a.RFC_E+'|'+a.NOMBRE_E+'|'+a.REGIMEN+'|'+a.RFC_R+
 		'|'+a.NOMBRE_R+'|'+a.RES+'|'+a.NUMREGIDTRI+'|'+a.USO_CFDI+
 		'|'+a.TOTIMPTRASLADADOS+'|'+a.TOTIMPRETENIDOS+'|'+a.DESTINOBM
@@ -90,7 +91,7 @@ begin
 
 	insert into #Campote
 	select 
-		'CFDIREL|'+ a.UUID
+		'CFDIREL|'+ a.UUID+'|TI'
 	from #Cabecera_CFDIsRelacionados a
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
@@ -119,6 +120,11 @@ begin
 						WHERE g.OrdenFacturacion_CartaPorte_DetalleFactura_Id = a.Id
 						FOR XML PATH('')),
 						1, 2, ''),' ',''),'NUMPEDIMENTO') NUMPEDIMENTO
+		,'CLAVEDELAPARTE' CLAVEDELAPARTE
+		,'NUMEROIDENTILAPARTE' NUMEROIDENTILAPARTE
+		,'CANTIDADPARTE' CANTIDADPARTE
+		,'PARTEUNIDAD' PARTEUNIDAD
+		,'DESCRIPCIONPARTE' DESCRIPCIONPARTE
 		,convert(bit,0) Procesada
 		into #Procesar_Detalle
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
@@ -172,6 +178,26 @@ begin
 			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 			and a.Id = @IdOrdenFacturacionProcesar_Detalle
 		order by a.Id
+
+		insert into #Campote
+		select 
+			'LINEASPARES|'+'|'+'|'+'|'+'|'+'|'+'|'
+
+		insert into #Campote
+		select 
+			'PARTESNUMADUANA|'
+
+		insert into #Campote
+		select 
+			'LINEAS|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'
+
+		insert into #Campote
+		select 
+			'IMPUESTOSLINEAS|'+'|'+'|'+'|'+'|'+'|'
+
+		insert into #Campote
+		select 
+			'NUMPEDIMENTO|'
 
 		update a
 			set
