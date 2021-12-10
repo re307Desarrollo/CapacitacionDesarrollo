@@ -22,7 +22,6 @@ select --top 3
 	,ISNULL(e.Clave,'MET') MET
 	,ISNULL(a.LugarExpedicion,'LUGAREXPEDICION') LUGAREXPEDICION
 	,ISNULL(a.Confirmacion,'CONFI') CONFI
-	--,'TI?' TI
 	,ISNULL(a.RFC_E,'RFC_E') RFC_E
 	,ISNULL(a.Nombre_E,'NOMBRE_E') NOMBRE_E
 	,ISNULL(h.Clave,'REGIMEN') REGIMEN
@@ -34,6 +33,11 @@ select --top 3
 	,ISNULL(CONVERT(VARCHAR,a.TOTIMPTRASLADADOS),'TOTIMPTRASLADADOS') TOTIMPTRASLADADOS
 	,ISNULL(CONVERT(VARCHAR,a.TOTIMPRETENIDOS),'TOTIMPRETENIDOS') TOTIMPRETENIDOS
 	,ISNULL(a.DESTINOBM,'DESTINOBM') DESTINOBM
+	,ISNULL(i.Clave,'TIPOIMPUESTO') TIPOIMPUESTO
+	,ISNULL(j.Clave,'FACTORIMPUESTO') FACTORIMPUESTO
+	,ISNULL(CONVERT(varchar,CONVERT(decimal(10,6),a.PorcentajeImpuesto)),'PORCENTAJEIMPUESTO') PORCENTAJEIMPUESTO
+	,ISNULL(CONVERT(VARCHAR,a.ImporteImpuesto),'IMPORTEIMPUESTO') IMPORTEIMPUESTO
+	,ISNULL(k.Clave,'T') TT
 	,convert(bit,0) Procesada
 	into #Procesar_CAB
 from OrdenFacturacion_CartaPorte_Cabecera a
@@ -51,6 +55,12 @@ from OrdenFacturacion_CartaPorte_Cabecera a
 	on a.Maestro_OrdenFacturacion_USOCFDI_Id = g.Id
 	left outer join Maestro_OrdenFacturacion_Regimen h
 	on a.Maestro_OrdenFacturacion_Regimen_Id = h.Id
+	left outer join Maestro_OrdenFacturacion_TipoImpuesto i
+	on a.Maestro_OrdenFacturacion_TipoImpuesto_Id = i.Id
+	left outer join Maestro_OrdenFacturacion_FactorImpuesto j
+	on a.Maestro_OrdenFacturacion_FactorImpuesto_Id = j.Id
+	left outer join Maestro_OrdenFacturacion_CalificadorImpuesto k
+	on a.Maestro_OrdenFacturacion_CalificadorImpuesto_Id = k.Id
 where 1 = 1
 	and a.Id = 6
 	--and a.IsProcessed is null
@@ -71,7 +81,7 @@ begin
 		'CABPORTE|'+a.SERIE+'|'+a.FOLIO+'|'+a.FECHAHORACOMP+
 		'|'+a.FO+'|'+a.CONDPAGO+'|'+a.SUBTOTAL+'|'+a.DESCUENTO+
 		'|'+a.MON+'|'+a.TIPOCAMBIO+'|'+a.TOTFACTURA+'|'+a.T+
-		'|'+a.MET+'|'+a.LUGAREXPEDICION+'|'+a.CONFI+'|'+--a.TI+
+		'|'+a.MET+'|'+a.LUGAREXPEDICION+'|'+a.CONFI+'|'+
 		'|'+a.RFC_E+'|'+a.NOMBRE_E+'|'+a.REGIMEN+'|'+a.RFC_R+
 		'|'+a.NOMBRE_R+'|'+a.RES+'|'+a.NUMREGIDTRI+'|'+a.USO_CFDI+
 		'|'+a.TOTIMPTRASLADADOS+'|'+a.TOTIMPRETENIDOS+'|'+a.DESTINOBM
@@ -83,15 +93,18 @@ begin
 		a.Id
 		,a.OrdenFacturacion_CartaPorte_Cabecera_Id
 		,ISNULL(a.UUID,'UUID') UUID
+		,ISNULL(b.Clave,'TI') TI
 		into #Cabecera_CFDIsRelacionados
 	from OrdenFacturacion_CartaPorte_Cabecera_CFDIsRelacionados a
+		left outer join Maestro_OrdenFacturacion_TipoRelacion b
+		on a.Maestro_OrdenFacturacion_TipoRelacion_Id = b.Id
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	order by a.Id
 
 	insert into #Campote
 	select 
-		'CFDIREL|'+ a.UUID+'|TI'
+		'CFDIREL|'+ a.UUID+'|'+a.TI
 	from #Cabecera_CFDIsRelacionados a
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
@@ -120,11 +133,6 @@ begin
 						WHERE g.OrdenFacturacion_CartaPorte_DetalleFactura_Id = a.Id
 						FOR XML PATH('')),
 						1, 2, ''),' ',''),'NUMPEDIMENTO') NUMPEDIMENTO
-		,'CLAVEDELAPARTE' CLAVEDELAPARTE
-		,'NUMEROIDENTILAPARTE' NUMEROIDENTILAPARTE
-		,'CANTIDADPARTE' CANTIDADPARTE
-		,'PARTEUNIDAD' PARTEUNIDAD
-		,'DESCRIPCIONPARTE' DESCRIPCIONPARTE
 		,convert(bit,0) Procesada
 		into #Procesar_Detalle
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
@@ -209,6 +217,14 @@ begin
 	end
 
 	drop table #Cabecera_CFDIsRelacionados,#Procesar_Detalle
+
+	insert into #Campote
+	select 
+		'IMPUESTOS|'+a.TIPOIMPUESTO+'|'+a.FACTORIMPUESTO+'|'+a.PORCENTAJEIMPUESTO+
+		'|'+a.IMPORTEIMPUESTO+'|'+a.TT
+	from #Procesar_CAB a
+	where 1 = 1
+		and a.Id = @IdOrdenFacturacionProcesar
 
 	update a
 		set
