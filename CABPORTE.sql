@@ -1,6 +1,7 @@
 ﻿declare
 	@IdOrdenFacturacionProcesar int = 0
-	,@IdOrdenFacturacionProcesar_Detalle int = 0 
+	,@IdOrdenFacturacionProcesar_Detalle int = 0
+	,@IdOrdenFacturacion int = 7
 	--,@LetraSerie varchar(max) = 'A'
 
 create table #Campote(
@@ -35,7 +36,7 @@ select --top 3
 	,ISNULL(a.DESTINOBM,'DESTINOBM') DESTINOBM
 	,ISNULL(i.Clave,'TIPOIMPUESTO') TIPOIMPUESTO
 	,ISNULL(j.Clave,'FACTORIMPUESTO') FACTORIMPUESTO
-	,ISNULL(CONVERT(varchar,CONVERT(decimal(10,6),a.PorcentajeImpuesto)),'PORCENTAJEIMPUESTO') PORCENTAJEIMPUESTO
+	,ISNULL(CONVERT(varchar,CONVERT(decimal(10,4),a.PorcentajeImpuesto)),'PORCENTAJEIMPUESTO') PORCENTAJEIMPUESTO
 	,ISNULL(CONVERT(VARCHAR,a.ImporteImpuesto),'IMPORTEIMPUESTO') IMPORTEIMPUESTO
 	,ISNULL(k.Clave,'T') TT
 	,convert(bit,0) Procesada
@@ -61,8 +62,10 @@ from OrdenFacturacion_CartaPorte_Cabecera a
 	on a.Maestro_OrdenFacturacion_FactorImpuesto_Id = j.Id
 	left outer join Maestro_OrdenFacturacion_CalificadorImpuesto k
 	on a.Maestro_OrdenFacturacion_CalificadorImpuesto_Id = k.Id
+	left outer join OrdenFacturacion_CartaPorte_Cabecera_ComplementoCartaPorte l
+	on l.OrdenFacturacion_CartaPorte_Cabecera_Id = a.Id
 where 1 = 1
-	and a.Id = 6
+	and a.Id = @IdOrdenFacturacion
 	--and a.IsProcessed is null
 	--or a.IsProcessed = 0
 
@@ -124,7 +127,7 @@ begin
 		,ISNULL(CONVERT(varchar,a.BaseImpuesto),'BASEIMPUESTO') BASEIMPUESTO
 		,ISNULL(d.Clave,'TIPOIMPUESTO') TIPOIMPUESTO
 		,ISNULL(e.Clave,'FACTORIMPUESTO') FACTORIMPUESTO
-		,ISNULL(CONVERT(varchar,a.PorcentajeImpuesto),'PORCENTAJEIMP') PORCENTAJEIMP
+		,ISNULL(CONVERT(varchar,CONVERT(decimal(10,4),a.PorcentajeImpuesto)),'PORCENTAJEIMP') PORCENTAJEIMP
 		,ISNULL(CONVERT(varchar,a.ImporteImpuesto),'IMPORTEIMPUESTO') IMPORTEIMPUESTO
 		,ISNULL(f.Clave,'CALIFIMPUESTO') CALIFIMPUESTO
 		,ISNULL(REPLACE(STUFF(
@@ -189,23 +192,11 @@ begin
 
 		insert into #Campote
 		select 
-			'LINEASPARES|'+'|'+'|'+'|'+'|'+'|'+'|'
+			'LINEASPARTES|'+'|'+'|'+'|'+'|'+'|'+'|'
 
 		insert into #Campote
 		select 
 			'PARTESNUMADUANA|'
-
-		insert into #Campote
-		select 
-			'LINEAS|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'
-
-		insert into #Campote
-		select 
-			'IMPUESTOSLINEAS|'+'|'+'|'+'|'+'|'+'|'
-
-		insert into #Campote
-		select 
-			'NUMPEDIMENTO|'
 
 		update a
 			set
@@ -226,12 +217,84 @@ begin
 	where 1 = 1
 		and a.Id = @IdOrdenFacturacionProcesar
 
+	select 
+		a.Id
+		,a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		,ISNULL(b.Clave,'VERSION') VERSIONC
+		,ISNULL(c.Clave,'SALEMERCANCIA') SALEMERCANCIA
+		,ISNULL(d.Clave,'ENTRADASALIDA') ENTRADASALIDA
+		,ISNULL(e.Clave,'VIAENTRADASALIDA') VIAENTRADASALIDA
+		,ISNULL(CONVERT(varchar,a.TotalDistanciaRecorrida),'DISTRECORRIDACPORTE') DISTRECORRIDACPORTE
+		,ISNULL(f.Clave,'CLAVETRANSPORTE') CLAVETRANSPORTE
+		,ISNULL(g.Pais,'PAISORIGEN') PAISORIGEN
+		into #Cabecera_ComplementoCartaPorte
+	from OrdenFacturacion_CartaPorte_Cabecera_ComplementoCartaPorte a
+		left outer join Maestro_OrdenFacturacion_Version b
+		on a.Maestro_OrdenFacturacion_Version_Id = b.Id
+		left outer join Maestro_OrdenFacturacion_TransporteInternacional c
+		on a.Maestro_OrdenFacturacion_TransporteInternacional_Id = c.Id
+		left outer join Maestro_OrdenFacturacion_EntradaSalidaMercancia d
+		on a.Maestro_OrdenFacturacion_EntradaSalidaMercancia_Id = d.Id
+		left outer join Maestro_OrdenFacturacion_ViaEntradaSalida e
+		on a.Maestro_OrdenFacturacion_ViaEntradaSalida_Id = e.Id
+		left outer join Maestro_OrdenFacturacion_ViaEntradaSalida f
+		on a.Maestro_OrdenFacturacion_ViaEntradaSalida_Id_ClaveTransporte = f.Id
+		left outer join CartaPorte_Pais g
+		on a.CartaPorte_Pais_Id = g.Id
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+	order by a.Id
+
+	insert into #Campote
+	select 
+		'CPORTE|'+a.VERSIONC+'|'+a.SALEMERCANCIA+'|'+a.ENTRADASALIDA+
+		'|'+a.VIAENTRADASALIDA+'|'+a.DISTRECORRIDACPORTE+'|'+a.CLAVETRANSPORTE+
+		'|'+a.PAISORIGEN
+	from #Cabecera_ComplementoCartaPorte a
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+	select 
+		a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		,ISNULL(a.Maestro_OrdenFacturacion_TipoEstacion_Id,'TIPOESTACION') TIPOESTACION
+		,ISNULL(CONVERT(varchar,a.DistanciaRecorrida),'DISTRECORRIDA') DISTRECORRIDA
+		,ISNULL(null,'IDORIGEN') IDORIGEN
+		,ISNULL(null,'RESIDENCIAFISCALREMI') RESIDENCIAFISCALREMI
+		,ISNULL(null,'NUMESTACIONREMI') NUMESTACIONREMI
+		,ISNULL(null,'NOMBREESTACIONREMI') NOMBREESTACIONREMI
+		,ISNULL(null,'NAVEGACIONTRAFICOREMI') NAVEGACIONTRAFICOREMI
+		,ISNULL(null,'FECHAHORADESALIDA') FECHAHORADESALIDA
+		,ISNULL(null,'IDDESTINO') IDDESTINO
+		,ISNULL(null,'RESIDENCIAFISCALDESTINO') RESIDENCIAFISCALDESTINO
+		,ISNULL(null,'NUMESTACIONDESTINATARIO') NUMESTACIONDESTINATARIO
+		,ISNULL(null,'NOMBREESTACIONDESTINATARIO') NOMBREESTACIONDESTINATARIO
+		,ISNULL(null,'NAVEGACIONTRAFICODESTINO') NAVEGACIONTRAFICODESTINO
+		,ISNULL(null,'FECHAHORADELLEGADA') FECHAHORADELLEGADA
+		,ISNULL(null,'CALLE') CALLE
+		,ISNULL(null,'NUMEXT') NUMEXT
+		,ISNULL(null,'NUMINT') NUMINT
+		,ISNULL(null,'COLONIACLAVE') COLONIACLAVE
+		,ISNULL(null,'LOCALIDAD') LOCALIDAD
+		,ISNULL(null,'RFC') RFC
+		,ISNULL(null,'MUNICIPIO') MUNICIPIO
+		,ISNULL(null,'ESTADO') ESTADO
+		,ISNULL(null,'PAIS') PAIS
+		,ISNULL(null,'CODIGOPOSTAL') CODIGOPOSTAL
+		,ISNULL(null,'TIPOUBICACION') TIPOUBICACION
+	from OrdenFacturacion_CartaPorte_Cabecera_ComplementoCartaPorte_Ubicacion a
+		left outer join Maestro_OrdenFacturacion_TipoEstacion b
+		on a.Maestro_OrdenFacturacion_TipoEstacion_Id = b.Id
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
 	update a
 		set
 			a.Procesada = 1
 	from #Procesar_CAB a
 	where 1 = 1
 		and a.Id = @IdOrdenFacturacionProcesar
+
+	drop table #Cabecera_ComplementoCartaPorte
 
 end
 
