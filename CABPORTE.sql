@@ -2,6 +2,7 @@
 	@IdOrdenFacturacionProcesar int = 0
 	,@IdOrdenFacturacionProcesar_Detalle int = 0
 	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0
+	,@IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal int = 0
 	,@IdOrdenFacturacion int = 7
 	--,@LetraSerie varchar(max) = 'A'
 
@@ -393,7 +394,8 @@ begin
 		,ISNULL(null,'PESONETO')PESONETO
 		,ISNULL(null,'PESOTARA')PESOTARA--DIFERENCIA ENTRE PESO NETO Y BRUTO
 		,ISNULL(null,'NUMPIEZAS')NUMPIEZAS
-		,ISNULL(null,'PEDIMENTO')PEDIMENTO--
+		,ISNULL(null,'PEDIMENTO')PEDIMENTO
+		,convert(bit,0) Procesada
 		into #Procesar_Detalle_Group_CPORTEMERCA
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
 	where 1 = 1
@@ -413,9 +415,55 @@ begin
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 
+	--while exists()
+
+	select
+		a.Id
+		,a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		,ISNULL(b.Clave,'PERMSCT')PERMSCT
+		,ISNULL(a.NumPermisoSCT,'NUMPERMSCT')NUMPERMSCT
+		,ISNULL(a.NombreAseguradora,'NOMBREASEGURADORA')NOMBREASEGURADORA
+		,ISNULL(a.NumPolizaSeguro,'NUMEROPOLIZASEGURO')NUMEROPOLIZASEGURO
+		,ISNULL(a.ConfigVehicular,'CONFIGURACIONVEICULAR')CONFIGURACIONVEICULAR
+		,ISNULL(a.PlacaVM,'PLACAMV')PLACAMV
+		,ISNULL(CONVERT(varchar,a.AnioModeloVM),'ANIOMODELOVM')ANIOMODELOVM
+		,ISNULL(a.AseguraRespCivil,'ASEGURARESPCIVIL')ASEGURARESPCIVIL
+		,ISNULL(a.PolizaRespCivil,'POILIZARESPCIVIL')POILIZARESPCIVIL
+		,ISNULL(a.AseguraMedAmbiente,'ASEGURAMEDAMBIENTE')ASEGURAMEDAMBIENTE
+		,ISNULL(a.PolizaMedAmbiente,'POLIZAMEDAMBIENTE')POLIZAMEDAMBIENTE
+		,ISNULL(a.AseguraCarga,'ASEGURACARGA')ASEGURACARGA
+		,ISNULL(a.PolizaCarga,'POLIZACARGA')POLIZACARGA
+		,ISNULL(CONVERT(varchar,a.PrimaSeguro),'PRIMASEGURO')PRIMASEGURO
+		into #Cabecera_AutoTransporteFederal
+	from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
+		left outer join CartaPorte_TipoPermiso b
+		on a.CartaPorte_TipoPermiso_Id = b.Id
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+	insert into #Campote
+	select 
+		'CPORTETRANSFED|'+a.PERMSCT+'|'+a.NUMPERMSCT+'|'+a.NOMBREASEGURADORA+
+		'|'+a.NUMEROPOLIZASEGURO+'|'+a.CONFIGURACIONVEICULAR+'|'+a.PLACAMV+
+		'|'+a.ANIOMODELOVM+'|'+a.ASEGURARESPCIVIL+'|'+a.POILIZARESPCIVIL+
+		'|'+a.ASEGURAMEDAMBIENTE+'|'+a.POLIZAMEDAMBIENTE+'|'+a.ASEGURACARGA+
+		'|'+a.POLIZACARGA+'|'+a.PRIMASEGURO
+	from #Cabecera_AutoTransporteFederal a
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+	
+	set @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal =(select 
+																		a.Id
+																	from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
+																	where 1 = 1
+																		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+																)
+
 	drop table #ComplementoCartaPorte_Ubicacion
 			  ,#Procesar_Detalle_Group_CPORTEMERCAS
 			  ,#Procesar_Detalle_Group_CPORTEMERCA
+			  ,#Cabecera_AutoTransporteFederal
 
 	update a
 		set
