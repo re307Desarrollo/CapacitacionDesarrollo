@@ -1,6 +1,7 @@
 ﻿declare
 	@IdOrdenFacturacionProcesar int = 0
 	,@IdOrdenFacturacionProcesar_Detalle int = 0
+	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0
 	,@IdOrdenFacturacion int = 7
 	--,@LetraSerie varchar(max) = 'A'
 
@@ -253,39 +254,101 @@ begin
 	from #Cabecera_ComplementoCartaPorte a
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
-
+	
 	select 
-		a.OrdenFacturacion_CartaPorte_Cabecera_Id
-		,ISNULL(a.Maestro_OrdenFacturacion_TipoEstacion_Id,'TIPOESTACION') TIPOESTACION
+		a.Id
+		,a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		,ISNULL(b.Clave,'TIPOESTACION') TIPOESTACION
 		,ISNULL(CONVERT(varchar,a.DistanciaRecorrida),'DISTRECORRIDA') DISTRECORRIDA
-		,ISNULL(null,'IDORIGEN') IDORIGEN
-		,ISNULL(null,'RESIDENCIAFISCALREMI') RESIDENCIAFISCALREMI
-		,ISNULL(null,'NUMESTACIONREMI') NUMESTACIONREMI
-		,ISNULL(null,'NOMBREESTACIONREMI') NOMBREESTACIONREMI
-		,ISNULL(null,'NAVEGACIONTRAFICOREMI') NAVEGACIONTRAFICOREMI
-		,ISNULL(null,'FECHAHORADESALIDA') FECHAHORADESALIDA
-		,ISNULL(null,'IDDESTINO') IDDESTINO
-		,ISNULL(null,'RESIDENCIAFISCALDESTINO') RESIDENCIAFISCALDESTINO
-		,ISNULL(null,'NUMESTACIONDESTINATARIO') NUMESTACIONDESTINATARIO
-		,ISNULL(null,'NOMBREESTACIONDESTINATARIO') NOMBREESTACIONDESTINATARIO
-		,ISNULL(null,'NAVEGACIONTRAFICODESTINO') NAVEGACIONTRAFICODESTINO
-		,ISNULL(null,'FECHAHORADELLEGADA') FECHAHORADELLEGADA
-		,ISNULL(null,'CALLE') CALLE
-		,ISNULL(null,'NUMEXT') NUMEXT
-		,ISNULL(null,'NUMINT') NUMINT
-		,ISNULL(null,'COLONIACLAVE') COLONIACLAVE
-		,ISNULL(null,'LOCALIDAD') LOCALIDAD
-		,ISNULL(null,'RFC') RFC
-		,ISNULL(null,'MUNICIPIO') MUNICIPIO
-		,ISNULL(null,'ESTADO') ESTADO
-		,ISNULL(null,'PAIS') PAIS
-		,ISNULL(null,'CODIGOPOSTAL') CODIGOPOSTAL
-		,ISNULL(null,'TIPOUBICACION') TIPOUBICACION
+		,ISNULL(a.Id_Origen,'IDORIGEN') IDORIGEN
+		,ISNULL(a.Referencia_Origen,'RESIDENCIAFISCALREMI') RESIDENCIAFISCALREMI
+		,ISNULL(c.Clave_Identificacion,'NUMESTACIONREMI') NUMESTACIONREMI
+		,ISNULL(a.NombreEstacion_Origen,'NOMBREESTACIONREMI') NOMBREESTACIONREMI
+		,ISNULL(d.Clave,'NAVEGACIONTRAFICOREMI') NAVEGACIONTRAFICOREMI
+		,ISNULL(FORMAT( a.FechaHoraSalida_Origen,'ddMMyyyyHHmmss'),'FECHAHORADESALIDA') FECHAHORADESALIDA
+		,ISNULL(a.Id_Origen,'IDDESTINO') IDDESTINO
+		,ISNULL(e.Pais,'RESIDENCIAFISCALDESTINO') RESIDENCIAFISCALDESTINO
+		,ISNULL(f.Clave_Identificacion,'NUMESTACIONDESTINATARIO') NUMESTACIONDESTINATARIO
+		,ISNULL(a.NombreEstacion_Destino,'NOMBREESTACIONDESTINATARIO') NOMBREESTACIONDESTINATARIO
+		,ISNULL(g.Clave,'NAVEGACIONTRAFICODESTINO') NAVEGACIONTRAFICODESTINO
+		,ISNULL(FORMAT( a.FechaHoraLlegada_Destino,'ddMMyyyyHHmmss'),'FECHAHORADELLEGADA') FECHAHORADELLEGADA
+		,ISNULL(a.Calle_Destino,'CALLE') CALLE
+		,ISNULL(a.NumeroExterior_Destino,'NUMEXT') NUMEXT
+		,ISNULL(a.NumeroInterior_Destino,'NUMINT') NUMINT
+		,ISNULL(h.Clave,'COLONIACLAVE') COLONIACLAVE
+		,ISNULL(ii.Clave,'LOCALIDAD') LOCALIDAD
+		,ISNULL(a.RFC_Destino,'RFC') RFC
+		,ISNULL(i.Clave,'MUNICIPIO') MUNICIPIO
+		,ISNULL(j.c_Estado,'ESTADO') ESTADO
+		,ISNULL(e.Pais,'PAIS') PAIS
+		,ISNULL(k.Codigo_Postal,'CODIGOPOSTAL') CODIGOPOSTAL
+		,ISNULL(l.Clave,'TIPOUBICACION') TIPOUBICACION
+		,convert(bit,0) Procesada
+		into #ComplementoCartaPorte_Ubicacion
 	from OrdenFacturacion_CartaPorte_Cabecera_ComplementoCartaPorte_Ubicacion a
 		left outer join Maestro_OrdenFacturacion_TipoEstacion b
 		on a.Maestro_OrdenFacturacion_TipoEstacion_Id = b.Id
+		left outer join CartaPorte_Estaciones c
+		on a.CartaPorte_Estado_Id_Origen = c.Id
+		left outer join Maestro_OrdenFacturacion_NavegacionTrafico d
+		on a.Maestro_OrdenFacturacion_NavegacionTrafico_Id_Origen = d.Id
+		left outer join CartaPorte_Pais e
+		on a.CartaPorte_Pais_Id_Destino = e.Id
+		left outer join CartaPorte_Estaciones f
+		on a.CartaPorte_Estado_Id_Destino = f.Id
+		left outer join Maestro_OrdenFacturacion_NavegacionTrafico g
+		on a.Maestro_OrdenFacturacion_NavegacionTrafico_Id_Destino = g.Id
+		left outer join CartaPorte_Colonia h
+		on a.CartaPorte_Colonia_Id_Destino = h.Id
+		left outer join CartaPorte_Localidad ii
+		on a.CartaPorte_Localidad_Id_Destino = ii.Id
+		left outer join CartaPorte_Municipio i
+		on a.CartaPorte_Municipio_Id_Destino = i.Id
+		left outer join CartaPorte_Estado j
+		on a.CartaPorte_Estado_Id_Destino = j.Id
+		left outer join CartaPorte_CodigoPostal k
+		on a.CartaPorte_CodigoPostal_Id_Destino = k.Id
+		left outer join Maestro_OrdenFacturacion_TipoUbicacion l
+		on a.Maestro_OrdenFacturacion_TipoUbicacion_Id_Destino = l.Id
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+	
+	while exists(select top 1 * from #ComplementoCartaPorte_Ubicacion a
+				where 1 = 1
+					and a.Procesada = 0		
+				)
+	begin
+		
+		set @IdOrdenFacturacionProcesar_cPORTE_Ubicacion = (select top 1 a.Id from #ComplementoCartaPorte_Ubicacion a
+													where 1 = 1
+														and a.Procesada = 0)
+
+		insert into #Campote
+		select 
+			'CPORTEUBIC|'+a.TIPOESTACION+'|'+a.DISTRECORRIDA+'|'+a.IDORIGEN+
+			'|'+a.RESIDENCIAFISCALREMI+'|'+a.NUMESTACIONREMI+'|'+a.NOMBREESTACIONREMI+
+			'|'+a.NAVEGACIONTRAFICOREMI+'|'+a.FECHAHORADESALIDA+'|'+a.IDDESTINO+
+			'|'+a.RESIDENCIAFISCALDESTINO+'|'+a.NUMESTACIONDESTINATARIO+
+			'|'+a.NOMBREESTACIONDESTINATARIO+'|'+a.NAVEGACIONTRAFICODESTINO+
+			'|'+a.FECHAHORADELLEGADA+'|'+a.CALLE+'|'+a.NUMEXT+'|'+a.NUMINT+
+			'|'+a.COLONIACLAVE+'|'+a.LOCALIDAD+'|'+a.RFC+'|'+a.MUNICIPIO+
+			'|'+a.ESTADO+'|'+a.PAIS+'|'+a.CODIGOPOSTAL+'|'+a.TIPOUBICACION
+		from #ComplementoCartaPorte_Ubicacion a
+		where 1 = 1
+			and a.Id = @IdOrdenFacturacionProcesar_cPORTE_Ubicacion
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+		update a
+			set
+				a.Procesada = 1
+		from #ComplementoCartaPorte_Ubicacion a
+		where 1 = 1
+			and a.Id = @IdOrdenFacturacionProcesar_cPORTE_Ubicacion
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+	end
+
+	drop table #ComplementoCartaPorte_Ubicacion
 
 	update a
 		set
