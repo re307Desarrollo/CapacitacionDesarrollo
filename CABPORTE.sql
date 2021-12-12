@@ -348,7 +348,29 @@ begin
 
 	end
 
-	drop table #ComplementoCartaPorte_Ubicacion
+	select 
+		a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		,ISNULL(null,'PESOBRUTOTOTAL')PESOBRUTOTOTAL
+		,ISNULL(null,'UNIDADDEPESO')UNIDADDEPESO
+		,ISNULL(null,'PESONETOTOTAL')PESONETOTOTAL
+		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'NUMTOTALMERCA')NUMTOTALMERCA
+		,ISNULL(null,'CARGOPORTASACION')CARGOPORTASACION
+		into #Procesar_Detalle_Group
+	from OrdenFacturacion_CartaPorte_DetalleFactura a
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
+
+	insert into #Campote
+	select 
+		'CPORTEMERCAS|'+a.PESOBRUTOTOTAL+'|'+a.UNIDADDEPESO+
+		'|'+a.PESONETOTOTAL+'|'+a.NUMTOTALMERCA+'|'+a.CARGOPORTASACION
+	from #Procesar_Detalle_Group a
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+		
+
+	drop table #ComplementoCartaPorte_Ubicacion,#Procesar_Detalle_Group
 
 	update a
 		set
