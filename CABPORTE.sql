@@ -355,7 +355,7 @@ begin
 		,ISNULL(null,'PESONETOTOTAL')PESONETOTOTAL
 		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'NUMTOTALMERCA')NUMTOTALMERCA
 		,ISNULL(null,'CARGOPORTASACION')CARGOPORTASACION
-		into #Procesar_Detalle_Group
+		into #Procesar_Detalle_Group_CPORTEMERCAS
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
@@ -365,12 +365,57 @@ begin
 	select 
 		'CPORTEMERCAS|'+a.PESOBRUTOTOTAL+'|'+a.UNIDADDEPESO+
 		'|'+a.PESONETOTOTAL+'|'+a.NUMTOTALMERCA+'|'+a.CARGOPORTASACION
-	from #Procesar_Detalle_Group a
+	from #Procesar_Detalle_Group_CPORTEMERCAS a
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 		
 
-	drop table #ComplementoCartaPorte_Ubicacion,#Procesar_Detalle_Group
+	select 
+		a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		,ISNULL(null,'BIENESTRNSP')BIENESTRNSP
+		,ISNULL(null,'CLAVESTCC')CLAVESTCC
+		,ISNULL(null,'DESCRIPCION')DESCRIPCION
+		,ISNULL(null,'CANTIDAD')CANTIDAD
+		,ISNULL(null,'CLAVEUNIDAD')CLAVEUNIDAD
+		,ISNULL(null,'UNIDAD')UNIDAD
+		,ISNULL(null,'DIMENCIONES')DIMENCIONES
+		,ISNULL(null,'MATERIALPELIGROSO')MATERIALPELIGROSO
+		,ISNULL(null,'CLAVEMATERIALPELIGROSO')CLAVEMATERIALPELIGROSO
+		,ISNULL(null,'EMBALAJE')EMBALAJE
+		,ISNULL(null,'DESCRIPCIONEMBALAJE')DESCRIPCIONEMBALAJE
+		,ISNULL(null,'PESOENKG')PESOENKG
+		,ISNULL(null,'VALORMERCANCIA')VALORMERCANCIA
+		,ISNULL(null,'MONEDA')MONEDA
+		,ISNULL(null,'FRACCIONARANCELARIA')FRACCIONARANCELARIA
+		,ISNULL(null,'UUIDCOMERCIOEXT')UUIDCOMERCIOEXT
+		,ISNULL(null,'UNIDADPESO')UNIDADPESO
+		,ISNULL(null,'PESOBRUTO')PESOBRUTO
+		,ISNULL(null,'PESONETO')PESONETO
+		,ISNULL(null,'PESOTARA')PESOTARA--DIFERENCIA ENTRE PESO NETO Y BRUTO
+		,ISNULL(null,'NUMPIEZAS')NUMPIEZAS
+		,ISNULL(null,'PEDIMENTO')PEDIMENTO--
+		into #Procesar_Detalle_Group_CPORTEMERCA
+	from OrdenFacturacion_CartaPorte_DetalleFactura a
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		
+	insert into #Campote
+	select 
+		'CPORTEMERCA|'+a.BIENESTRNSP+'|'+a.CLAVESTCC+'|'+a.DESCRIPCION+
+		'|'+a.CANTIDAD+'|'+a.CLAVEUNIDAD+'|'+a.UNIDAD+'|'+a.DIMENCIONES+
+		'|'+a.MATERIALPELIGROSO+'|'+a.CLAVEMATERIALPELIGROSO+'|'+a.EMBALAJE+
+		'|'+a.DESCRIPCIONEMBALAJE+'|'+a.PESOENKG+'|'+a.VALORMERCANCIA+
+		'|'+a.MONEDA+'|'+a.FRACCIONARANCELARIA+'|'+a.UUIDCOMERCIOEXT+
+		'|'+a.UNIDADPESO+'|'+a.PESOBRUTO+'|'+a.PESONETO+'|'+a.PESOTARA+
+		'|'+a.NUMPIEZAS+'|'+a.PEDIMENTO
+	from #Procesar_Detalle_Group_CPORTEMERCA a
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+	drop table #ComplementoCartaPorte_Ubicacion
+			  ,#Procesar_Detalle_Group_CPORTEMERCAS
+			  ,#Procesar_Detalle_Group_CPORTEMERCA
 
 	update a
 		set
