@@ -3,6 +3,7 @@
 	,@IdOrdenFacturacionProcesar_Detalle int = 0
 	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0
 	,@IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal int = 0
+	,@IdAutoTransporteFederal_Remolque int = 0 
 	,@IdOrdenFacturacion int = 7
 	--,@LetraSerie varchar(max) = 'A'
 
@@ -449,6 +450,10 @@ begin
 
 	insert into #Campote
 	select 
+		'CPORTECANTTRANS|'+'|'+'|'
+
+	insert into #Campote
+	select 
 		'CPORTETRANSFED|'+a.PERMSCT+'|'+a.NUMPERMSCT+'|'+a.NOMBREASEGURADORA+
 		'|'+a.NUMEROPOLIZASEGURO+'|'+a.CONFIGURACIONVEICULAR+'|'+a.PLACAMV+
 		'|'+a.ANIOMODELOVM+'|'+a.ASEGURARESPCIVIL+'|'+a.POILIZARESPCIVIL+
@@ -479,13 +484,55 @@ begin
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
 
-	--while exists(select top 1 * from #Cabecera_AutoTransporteFederal_Remolque a
-	--			where 1 = 1
-	--				and a.Procesada = 0
-	--			)
-	--begin
-	--end
+	while exists(select top 1 * from #Cabecera_AutoTransporteFederal_Remolque a
+				where 1 = 1
+					and a.Procesada = 0
+				)
+	begin
+		set @IdAutoTransporteFederal_Remolque =(select top 1 a.Id from #Cabecera_AutoTransporteFederal_Remolque a
+												where 1 = 1
+													and a.Procesada = 0
+												)
+
+		insert into #Campote
+		select 
+			'CPORTEREMOL|'+a.PLACAREMOLQUE+'|'+a.TIPOREMOLQUE
+		from #Cabecera_AutoTransporteFederal_Remolque a
+		where 1 = 1
+			and a.Id = @IdAutoTransporteFederal_Remolque
+			and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
+		
+		update a
+			set
+				a.Procesada = 1
+		from #Cabecera_AutoTransporteFederal_Remolque a
+		where 1 = 1
+			and a.Id = @IdAutoTransporteFederal_Remolque
+			and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
+	end
 	drop table #Cabecera_AutoTransporteFederal_Remolque
+
+	
+	insert into #Campote
+	select 
+		'CPORTETRANSMARI|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+
+		'|'+'|'
+	
+	insert into #Campote
+	select 
+		'CPORTECONTEMA|'+'|'+'|'
+	
+	insert into #Campote
+	select 
+		'CPORTETRANSAER|INFO DE TABLA POR CREAR'
+	
+	insert into #Campote
+	select 
+		'CPORTETRANSFERR|'+'|'+'|'+'|'+'|'
+	
+	insert into #Campote
+	select 
+		'CPORTEDERPASO|'+'|'
 
 	drop table #ComplementoCartaPorte_Ubicacion
 			  ,#Procesar_Detalle_Group_CPORTEMERCAS
