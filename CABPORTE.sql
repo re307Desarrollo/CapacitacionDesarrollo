@@ -255,6 +255,8 @@ begin
 	from #Cabecera_ComplementoCartaPorte a
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+	drop table #Cabecera_ComplementoCartaPorte
 	
 	select 
 		a.Id
@@ -351,13 +353,17 @@ begin
 
 	select 
 		a.OrdenFacturacion_CartaPorte_Cabecera_Id
-		,ISNULL(null,'PESOBRUTOTOTAL')PESOBRUTOTOTAL
+		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESOBRUTOTOTAL')PESOBRUTOTOTAL
 		,ISNULL(null,'UNIDADDEPESO')UNIDADDEPESO
-		,ISNULL(null,'PESONETOTOTAL')PESONETOTOTAL
+		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETOTOTAL')PESONETOTOTAL
 		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'NUMTOTALMERCA')NUMTOTALMERCA
 		,ISNULL(null,'CARGOPORTASACION')CARGOPORTASACION
 		into #Procesar_Detalle_Group_CPORTEMERCAS
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
+		left outer join Programa_Circulacion_Completo b
+		on a.NoIdentificacion = b.Codigo_Barras COLLATE Modern_Spanish_CI_AS
+		left outer join Maestro_Productos_Dimensiones c
+		on b.ITEM = c.Item COLLATE Modern_Spanish_CI_AS
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
@@ -460,6 +466,27 @@ begin
 																		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 																)
 
+	select 
+		a.Id
+		,a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id
+		,ISNULL(a.Placa_Remolque,'PLACAREMOLQUE')PLACAREMOLQUE
+		,ISNULL(b.Clave,'TIPOREMOLQUE')TIPOREMOLQUE
+		,convert(bit,0) Procesada
+		into #Cabecera_AutoTransporteFederal_Remolque
+	from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Remolque a
+		left outer join CartaPorte_TipoRemolque b
+		on a.CartaPorte_TipoRemolque_Id = b.Id
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
+
+	--while exists(select top 1 * from #Cabecera_AutoTransporteFederal_Remolque a
+	--			where 1 = 1
+	--				and a.Procesada = 0
+	--			)
+	--begin
+	--end
+	drop table #Cabecera_AutoTransporteFederal_Remolque
+
 	drop table #ComplementoCartaPorte_Ubicacion
 			  ,#Procesar_Detalle_Group_CPORTEMERCAS
 			  ,#Procesar_Detalle_Group_CPORTEMERCA
@@ -472,7 +499,7 @@ begin
 	where 1 = 1
 		and a.Id = @IdOrdenFacturacionProcesar
 
-	drop table #Cabecera_ComplementoCartaPorte
+	--drop table #Cabecera_ComplementoCartaPorte
 
 end
 
