@@ -354,6 +354,7 @@ begin
 
 	select 
 		a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		--,b.PVP
 		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESOBRUTOTOTAL')PESOBRUTOTOTAL
 		,ISNULL(null,'UNIDADDEPESO')UNIDADDEPESO
 		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETOTOTAL')PESONETOTOTAL
@@ -368,6 +369,7 @@ begin
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
+			--,b.PVP
 
 	insert into #Campote
 	select 
@@ -383,12 +385,12 @@ begin
 		,ISNULL(null,'BIENESTRNSP')BIENESTRNSP
 		,ISNULL(null,'CLAVESTCC')CLAVESTCC
 		,ISNULL(null,'DESCRIPCION')DESCRIPCION
-		,ISNULL(null,'CANTIDAD')CANTIDAD
-		,ISNULL(null,'CLAVEUNIDAD')CLAVEUNIDAD
-		,ISNULL(null,'UNIDAD')UNIDAD
+		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'CANTIDAD')CANTIDAD
+		,ISNULL(d.Clave,'CLAVEUNIDAD')CLAVEUNIDAD
+		,ISNULL(a.Unidad_Medida,'UNIDAD')UNIDAD
 		,ISNULL(null,'DIMENCIONES')DIMENCIONES
-		,ISNULL(null,'MATERIALPELIGROSO')MATERIALPELIGROSO
-		,ISNULL(null,'CLAVEMATERIALPELIGROSO')CLAVEMATERIALPELIGROSO
+		,ISNULL(null,'')MATERIALPELIGROSO
+		,ISNULL(null,'')CLAVEMATERIALPELIGROSO
 		,ISNULL(null,'EMBALAJE')EMBALAJE
 		,ISNULL(null,'DESCRIPCIONEMBALAJE')DESCRIPCIONEMBALAJE
 		,ISNULL(null,'PESOENKG')PESOENKG
@@ -397,17 +399,27 @@ begin
 		,ISNULL(null,'FRACCIONARANCELARIA')FRACCIONARANCELARIA
 		,ISNULL(null,'UUIDCOMERCIOEXT')UUIDCOMERCIOEXT
 		,ISNULL(null,'UNIDADPESO')UNIDADPESO
-		,ISNULL(null,'PESOBRUTO')PESOBRUTO
-		,ISNULL(null,'PESONETO')PESONETO
-		,ISNULL(null,'PESOTARA')PESOTARA--DIFERENCIA ENTRE PESO NETO Y BRUTO
-		,ISNULL(null,'NUMPIEZAS')NUMPIEZAS
+		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESOBRUTO')PESOBRUTO
+		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETO')PESONETO
+		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)-SUM(c.Unit_Weight)),'PESOTARA')PESOTARA--DIFERENCIA ENTRE PESO NETO Y BRUTO
+		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'NUMPIEZAS')NUMPIEZAS
 		,ISNULL(null,'PEDIMENTO')PEDIMENTO
 		,convert(bit,0) Procesada
 		into #Procesar_Detalle_Group_CPORTEMERCA
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
+		left outer join Programa_Circulacion_Completo b
+		on a.NoIdentificacion = b.Codigo_Barras COLLATE Modern_Spanish_CI_AS
+		left outer join Maestro_Productos_Dimensiones c
+		on b.ITEM = c.Item COLLATE Modern_Spanish_CI_AS
+		left outer join Maestro_OrdenFacturacion_ClaveUnidad d
+		on a.Maestro_OrdenFacturacion_ClaveUnidad_Id = d.Id
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
+			,b.PVP
+			,a.Unidad_Medida
+			,d.Clave
+			--,a.Descripcion
 		
 	insert into #Campote
 	select 
