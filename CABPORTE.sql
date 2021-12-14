@@ -1,7 +1,8 @@
 ﻿declare
 	@IdOrdenFacturacionProcesar int = 0
 	,@IdOrdenFacturacionProcesar_Detalle int = 0
-	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0
+	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0 --
+	,@IdDetalle_CPORTEMERCA int = 0
 	,@IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal int = 0
 	,@IdAutoTransporteFederal_Remolque int = 0 
 	,@IdAutoTransporteFederal_Transportista int = 0 
@@ -355,7 +356,6 @@ begin
 
 	select 
 		a.OrdenFacturacion_CartaPorte_Cabecera_Id
-		--,b.PVP
 		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESOBRUTOTOTAL')PESOBRUTOTOTAL
 		,ISNULL(null,'UNIDADDEPESO')UNIDADDEPESO
 		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETOTOTAL*')PESONETOTOTAL
@@ -370,7 +370,6 @@ begin
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
-			--,b.PVP
 
 	insert into #Campote
 	select 
@@ -382,7 +381,8 @@ begin
 		
 
 	select 
-		a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		a.Id
+		,a.OrdenFacturacion_CartaPorte_Cabecera_Id
 		,ISNULL(e.Clave,'BIENESTRNSP')BIENESTRNSP
 		,ISNULL(null,'CLAVESTCC')CLAVESTCC
 		,ISNULL(a.Descripcion,'DESCRIPCION')DESCRIPCION
@@ -406,7 +406,7 @@ begin
 		,ISNULL(CONVERT(varchar,a.Cantidad),'NUMPIEZAS*')NUMPIEZAS
 		,ISNULL(null,'PEDIMENTO*')PEDIMENTO
 		,convert(bit,0) Procesada
-		into #Procesar_Detalle_Group_CPORTEMERCA
+		into #Procesar_Detalle_CPORTEMERCA
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
 		left outer join Programa_Circulacion_Completo b
 		on a.NoIdentificacion = b.Codigo_Barras COLLATE Modern_Spanish_CI_AS
@@ -423,25 +423,42 @@ begin
 	--		,a.Unidad_Medida
 	--		,d.Clave
 	--		--,a.Descripcion
-		
-	insert into #Campote
-	select 
-		'CPORTEMERCA|'+a.BIENESTRNSP+'|'+a.CLAVESTCC+'|'+a.DESCRIPCION+
-		'|'+a.CANTIDAD+'|'+a.CLAVEUNIDAD+'|'+a.UNIDAD+'|'+a.DIMENCIONES+
-		'|'+a.MATERIALPELIGROSO+'|'+a.CLAVEMATERIALPELIGROSO+'|'+a.EMBALAJE+
-		'|'+a.DESCRIPCIONEMBALAJE+'|'+a.PESOENKG+'|'+a.VALORMERCANCIA+
-		'|'+a.MONEDA+'|'+a.FRACCIONARANCELARIA+'|'+a.UUIDCOMERCIOEXT+
-		'|'+a.UNIDADPESO+'|'+a.PESOBRUTO+'|'+a.PESONETO+'|'+a.PESOTARA+
-		'|'+a.NUMPIEZAS+'|'+a.PEDIMENTO
-	from #Procesar_Detalle_Group_CPORTEMERCA a
-	where 1 = 1
-		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+	
+	while exists(select top 1 * from #Procesar_Detalle_CPORTEMERCA a
+				 where 1 = 1
+					and a.Procesada = 0)
+	begin
+		set @IdDetalle_CPORTEMERCA = (select top 1 a.Id from #Procesar_Detalle_CPORTEMERCA a
+									  where 1 = 1
+										and a.Procesada = 0)
+		insert into #Campote
+		select 
+			'CPORTEMERCA|'+a.BIENESTRNSP+'|'+a.CLAVESTCC+'|'+a.DESCRIPCION+
+			'|'+a.CANTIDAD+'|'+a.CLAVEUNIDAD+'|'+a.UNIDAD+'|'+a.DIMENCIONES+
+			'|'+a.MATERIALPELIGROSO+'|'+a.CLAVEMATERIALPELIGROSO+'|'+a.EMBALAJE+
+			'|'+a.DESCRIPCIONEMBALAJE+'|'+a.PESOENKG+'|'+a.VALORMERCANCIA+
+			'|'+a.MONEDA+'|'+a.FRACCIONARANCELARIA+'|'+a.UUIDCOMERCIOEXT+
+			'|'+a.UNIDADPESO+'|'+a.PESOBRUTO+'|'+a.PESONETO+'|'+a.PESOTARA+
+			'|'+a.NUMPIEZAS+'|'+a.PEDIMENTO
+		from #Procesar_Detalle_CPORTEMERCA a
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+			and a.Id = @IdDetalle_CPORTEMERCA
 
-	--while exists()
+		insert into #Campote
+		select 
+			'CPORTECANTTRANS|'+'|'+'|'
 
-	insert into #Campote
-	select 
-		'CPORTECANTTRANS|'+'|'+'|'
+		update a
+			set
+				a.Procesada  = 1
+		from #Procesar_Detalle_CPORTEMERCA a
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+			and a.Id = @IdDetalle_CPORTEMERCA
+	end
+
+	drop table #Procesar_Detalle_CPORTEMERCA
 
 	if exists(select * from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
 			  where 1 = 1
@@ -744,7 +761,6 @@ begin
 	
 	drop table #ComplementoCartaPorte_Ubicacion
 			  ,#Procesar_Detalle_Group_CPORTEMERCAS
-			  ,#Procesar_Detalle_Group_CPORTEMERCA
 			  ,#Cabecera_AutoTransporteFederal
 
 	update a
