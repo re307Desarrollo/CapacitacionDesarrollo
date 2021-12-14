@@ -382,28 +382,28 @@ begin
 
 	select 
 		a.OrdenFacturacion_CartaPorte_Cabecera_Id
-		,ISNULL(null,'BIENESTRNSP')BIENESTRNSP
+		,ISNULL(e.Clave,'BIENESTRNSP')BIENESTRNSP
 		,ISNULL(null,'CLAVESTCC')CLAVESTCC
-		,ISNULL(null,'DESCRIPCION')DESCRIPCION
-		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'CANTIDAD')CANTIDAD
+		,ISNULL(a.Descripcion,'DESCRIPCION')DESCRIPCION
+		,ISNULL(CONVERT(varchar,a.Cantidad),'CANTIDAD')CANTIDAD
 		,ISNULL(d.Clave,'CLAVEUNIDAD')CLAVEUNIDAD
-		,ISNULL(a.Unidad_Medida,'UNIDAD')UNIDAD
-		,ISNULL(null,'DIMENCIONES')DIMENCIONES
-		,ISNULL(null,'')MATERIALPELIGROSO
-		,ISNULL(null,'')CLAVEMATERIALPELIGROSO
-		,ISNULL(null,'EMBALAJE')EMBALAJE
-		,ISNULL(null,'DESCRIPCIONEMBALAJE')DESCRIPCIONEMBALAJE
-		,ISNULL(null,'PESOENKG')PESOENKG
-		,ISNULL(null,'VALORMERCANCIA')VALORMERCANCIA
-		,ISNULL(null,'MONEDA')MONEDA
-		,ISNULL(null,'FRACCIONARANCELARIA')FRACCIONARANCELARIA
-		,ISNULL(null,'UUIDCOMERCIOEXT')UUIDCOMERCIOEXT
-		,ISNULL(null,'UNIDADPESO')UNIDADPESO
-		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESOBRUTO')PESOBRUTO
-		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETO')PESONETO
-		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)-SUM(c.Unit_Weight)),'PESOTARA')PESOTARA--DIFERENCIA ENTRE PESO NETO Y BRUTO
-		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'NUMPIEZAS')NUMPIEZAS
-		,ISNULL(null,'PEDIMENTO')PEDIMENTO
+		,ISNULL(a.Unidad_Medida,'UNIDAD*')UNIDAD
+		,ISNULL(null,'DIMENCIONES*')DIMENCIONES
+		,ISNULL(null,'MATERIALPELIGROSO*')MATERIALPELIGROSO
+		,ISNULL(null,'CLAVEMATERIALPELIGROSO*')CLAVEMATERIALPELIGROSO
+		,ISNULL(null,'EMBALAJE*')EMBALAJE
+		,ISNULL(null,'DESCRIPCIONEMBALAJE*')DESCRIPCIONEMBALAJE
+		,ISNULL(CONVERT(varchar,c.Unit_Weight),'PESOENKG')PESOENKG
+		,ISNULL(null,'VALORMERCANCIA*')VALORMERCANCIA
+		,ISNULL(null,'MONEDA*')MONEDA
+		,ISNULL(null,'FRACCIONARANCELARIA*')FRACCIONARANCELARIA
+		,ISNULL(null,'UUIDCOMERCIOEXT*')UUIDCOMERCIOEXT
+		,ISNULL(null,'UNIDADPESO*')UNIDADPESO
+		,ISNULL(CONVERT(varchar,c.Unit_Weight),'PESOBRUTO*')PESOBRUTO
+		,ISNULL(CONVERT(varchar,c.Unit_Weight),'PESONETO*')PESONETO
+		,ISNULL(CONVERT(varchar,c.Unit_Weight-c.Unit_Weight),'PESOTARA*')PESOTARA--DIFERENCIA ENTRE PESO NETO Y BRUTO
+		,ISNULL(CONVERT(varchar,a.Cantidad),'NUMPIEZAS*')NUMPIEZAS
+		,ISNULL(null,'PEDIMENTO*')PEDIMENTO
 		,convert(bit,0) Procesada
 		into #Procesar_Detalle_Group_CPORTEMERCA
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
@@ -413,13 +413,15 @@ begin
 		on b.ITEM = c.Item COLLATE Modern_Spanish_CI_AS
 		left outer join Maestro_OrdenFacturacion_ClaveUnidad d
 		on a.Maestro_OrdenFacturacion_ClaveUnidad_Id = d.Id
+		left outer join Maestro_OrdenFacturacion_ClaveProductoServicio e
+		on a.Maestro_OrdenFacturacion_ClaveProductoServicio_Id = e.Id
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
-	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
-			,b.PVP
-			,a.Unidad_Medida
-			,d.Clave
-			--,a.Descripcion
+	--group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
+	--		,b.PVP
+	--		,a.Unidad_Medida
+	--		,d.Clave
+	--		--,a.Descripcion
 		
 	insert into #Campote
 	select 
@@ -436,94 +438,109 @@ begin
 
 	--while exists()
 
-	select
-		a.Id
-		,a.OrdenFacturacion_CartaPorte_Cabecera_Id
-		,ISNULL(b.Clave,'PERMSCT')PERMSCT
-		,ISNULL(a.NumPermisoSCT,'NUMPERMSCT')NUMPERMSCT
-		,ISNULL(a.NombreAseguradora,'NOMBREASEGURADORA')NOMBREASEGURADORA
-		,ISNULL(a.NumPolizaSeguro,'NUMEROPOLIZASEGURO')NUMEROPOLIZASEGURO
-		,ISNULL(a.ConfigVehicular,'CONFIGURACIONVEICULAR')CONFIGURACIONVEICULAR
-		,ISNULL(a.PlacaVM,'PLACAMV')PLACAMV
-		,ISNULL(CONVERT(varchar,a.AnioModeloVM),'ANIOMODELOVM')ANIOMODELOVM
-		,ISNULL(a.AseguraRespCivil,'ASEGURARESPCIVIL')ASEGURARESPCIVIL
-		,ISNULL(a.PolizaRespCivil,'POILIZARESPCIVIL')POILIZARESPCIVIL
-		,ISNULL(a.AseguraMedAmbiente,'ASEGURAMEDAMBIENTE')ASEGURAMEDAMBIENTE
-		,ISNULL(a.PolizaMedAmbiente,'POLIZAMEDAMBIENTE')POLIZAMEDAMBIENTE
-		,ISNULL(a.AseguraCarga,'ASEGURACARGA')ASEGURACARGA
-		,ISNULL(a.PolizaCarga,'POLIZACARGA')POLIZACARGA
-		,ISNULL(CONVERT(varchar,a.PrimaSeguro),'PRIMASEGURO')PRIMASEGURO
-		into #Cabecera_AutoTransporteFederal
-	from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
-		left outer join CartaPorte_TipoPermiso b
-		on a.CartaPorte_TipoPermiso_Id = b.Id
-	where 1 = 1
-		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
-
 	insert into #Campote
 	select 
 		'CPORTECANTTRANS|'+'|'+'|'
 
-	insert into #Campote
-	select 
-		'CPORTETRANSFED|'+a.PERMSCT+'|'+a.NUMPERMSCT+'|'+a.NOMBREASEGURADORA+
-		'|'+a.NUMEROPOLIZASEGURO+'|'+a.CONFIGURACIONVEICULAR+'|'+a.PLACAMV+
-		'|'+a.ANIOMODELOVM+'|'+a.ASEGURARESPCIVIL+'|'+a.POILIZARESPCIVIL+
-		'|'+a.ASEGURAMEDAMBIENTE+'|'+a.POLIZAMEDAMBIENTE+'|'+a.ASEGURACARGA+
-		'|'+a.POLIZACARGA+'|'+a.PRIMASEGURO
-	from #Cabecera_AutoTransporteFederal a
-	where 1 = 1
-		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
-
-	
-	set @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal =(select 
-																		a.Id
-																	from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
-																	where 1 = 1
-																		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
-																)
-
-	select 
-		a.Id
-		,a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id
-		,ISNULL(a.Placa_Remolque,'PLACAREMOLQUE')PLACAREMOLQUE
-		,ISNULL(b.Clave,'TIPOREMOLQUE')TIPOREMOLQUE
-		,convert(bit,0) Procesada
-		into #Cabecera_AutoTransporteFederal_Remolque
-	from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Remolque a
-		left outer join CartaPorte_TipoRemolque b
-		on a.CartaPorte_TipoRemolque_Id = b.Id
-	where 1 = 1
-		and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
-
-	while exists(select top 1 * from #Cabecera_AutoTransporteFederal_Remolque a
-				where 1 = 1
-					and a.Procesada = 0
+	if exists(select * from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
+			  where 1 = 1
+				and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 				)
 	begin
-		set @IdAutoTransporteFederal_Remolque =(select top 1 a.Id from #Cabecera_AutoTransporteFederal_Remolque a
-												where 1 = 1
-													and a.Procesada = 0
-												)
+		select
+			a.Id
+			,a.OrdenFacturacion_CartaPorte_Cabecera_Id
+			,ISNULL(b.Clave,'')PERMSCT
+			,ISNULL(a.NumPermisoSCT,'')NUMPERMSCT
+			,ISNULL(a.NombreAseguradora,'')NOMBREASEGURADORA
+			,ISNULL(a.NumPolizaSeguro,'')NUMEROPOLIZASEGURO
+			,ISNULL(a.ConfigVehicular,'')CONFIGURACIONVEICULAR
+			,ISNULL(a.PlacaVM,'')PLACAMV
+			,ISNULL(CONVERT(varchar,a.AnioModeloVM),'')ANIOMODELOVM
+			,ISNULL(a.AseguraRespCivil,'')ASEGURARESPCIVIL
+			,ISNULL(a.PolizaRespCivil,'')POILIZARESPCIVIL
+			,ISNULL(a.AseguraMedAmbiente,'')ASEGURAMEDAMBIENTE
+			,ISNULL(a.PolizaMedAmbiente,'')POLIZAMEDAMBIENTE
+			,ISNULL(a.AseguraCarga,'')ASEGURACARGA
+			,ISNULL(a.PolizaCarga,'')POLIZACARGA
+			,ISNULL(CONVERT(varchar,a.PrimaSeguro),'')PRIMASEGURO
+			into #Cabecera_AutoTransporteFederal
+		from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
+			left outer join CartaPorte_TipoPermiso b
+			on a.CartaPorte_TipoPermiso_Id = b.Id
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 
 		insert into #Campote
 		select 
-			'CPORTEREMOL|'+a.PLACAREMOLQUE+'|'+a.TIPOREMOLQUE
-		from #Cabecera_AutoTransporteFederal_Remolque a
+			'CPORTETRANSFED|'+a.PERMSCT+'|'+a.NUMPERMSCT+'|'+a.NOMBREASEGURADORA+
+			'|'+a.NUMEROPOLIZASEGURO+'|'+a.CONFIGURACIONVEICULAR+'|'+a.PLACAMV+
+			'|'+a.ANIOMODELOVM+'|'+a.ASEGURARESPCIVIL+'|'+a.POILIZARESPCIVIL+
+			'|'+a.ASEGURAMEDAMBIENTE+'|'+a.POLIZAMEDAMBIENTE+'|'+a.ASEGURACARGA+
+			'|'+a.POLIZACARGA+'|'+a.PRIMASEGURO
+		from #Cabecera_AutoTransporteFederal a
 		where 1 = 1
-			and a.Id = @IdAutoTransporteFederal_Remolque
-			and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
-		
-		update a
-			set
-				a.Procesada = 1
-		from #Cabecera_AutoTransporteFederal_Remolque a
-		where 1 = 1
-			and a.Id = @IdAutoTransporteFederal_Remolque
-			and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
-	end
-	drop table #Cabecera_AutoTransporteFederal_Remolque
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 
+	
+		set @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal =(select 
+																			a.Id
+																		from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
+																		where 1 = 1
+																			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+																	)
+
+		select 
+			a.Id
+			,a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id
+			,ISNULL(a.Placa_Remolque,'PLACAREMOLQUE')PLACAREMOLQUE
+			,ISNULL(b.Clave,'TIPOREMOLQUE')TIPOREMOLQUE
+			,convert(bit,0) Procesada
+			into #Cabecera_AutoTransporteFederal_Remolque
+		from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Remolque a
+			left outer join CartaPorte_TipoRemolque b
+			on a.CartaPorte_TipoRemolque_Id = b.Id
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
+
+		while exists(select top 1 * from #Cabecera_AutoTransporteFederal_Remolque a
+					where 1 = 1
+						and a.Procesada = 0
+					)
+		begin
+			set @IdAutoTransporteFederal_Remolque =(select top 1 a.Id from #Cabecera_AutoTransporteFederal_Remolque a
+													where 1 = 1
+														and a.Procesada = 0
+													)
+
+			insert into #Campote
+			select 
+				'CPORTEREMOL|'+a.PLACAREMOLQUE+'|'+a.TIPOREMOLQUE
+			from #Cabecera_AutoTransporteFederal_Remolque a
+			where 1 = 1
+				and a.Id = @IdAutoTransporteFederal_Remolque
+				and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
+		
+			update a
+				set
+					a.Procesada = 1
+			from #Cabecera_AutoTransporteFederal_Remolque a
+			where 1 = 1
+				and a.Id = @IdAutoTransporteFederal_Remolque
+				and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Id = @IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal
+		end
+		drop table #Cabecera_AutoTransporteFederal_Remolque
+	end
+	if not exists(select * from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal a
+			  where 1 = 1
+				and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+				)
+	begin
+
+		insert into #Campote
+		select 
+			'CPORTETRANSFED|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'
+	end
 	
 	insert into #Campote
 	select 
@@ -534,10 +551,67 @@ begin
 	select 
 		'CPORTECONTEMA|'+'|'+'|'
 	
-	insert into #Campote
-	select 
-		'CPORTETRANSAER|INFO DE TABLA POR CREAR'
+	if exists(select * from OrdenFacturacion_CartaPorte_Cabecera_TransporteAereo a
+			  where 1 = 1
+				and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+			 )
+	begin
+		select 
+			a.Id
+			,a.OrdenFacturacion_CartaPorte_Cabecera_Id
+			,ISNULL(b.Clave,'PERMSCT')PERMSCT
+			,ISNULL(a.NumPermisoSCT,'NUMPERMISOSCT')NUMPERMISOSCT
+			,ISNULL(a.MatriculaAeronave,'MATRICULAAERONAVE*')MATRICULAAERONAVE
+			,ISNULL(a.NombreAseguradora,'NOMBREASERG*')NOMBREASERG
+			,ISNULL(a.NumPolizaSeguro,'NUMPOLIZASEGURO*')NUMPOLIZASEGURO
+			,ISNULL(a.NumeroGuia,'NUMGUIA')NUMGUIA
+			,ISNULL(a.LugarContrato,'LUGARCONTRATO*')LUGARCONTRATO
+			,ISNULL(a.RFCTransportista,'RFCTRANSPORTISTA*')RFCTRANSPORTISTA
+			,ISNULL(c.Clave,'CODIGOTRANSPORTISTA')CODIGOTRANSPORTISTA
+			,ISNULL(a.NumRegIdTribTransporte,'NUMREDIDTRIBTRANSPOR*')NUMREDIDTRIBTRANSPOR
+			,ISNULL(d.Pais,'RESIDENCIAFISLCATRANSPOR*')RESIDENCIAFISLCATRANSPOR
+			,ISNULL(a.NombreTransportista,'NOMBRETRANSPORTISTA*')NOMBRETRANSPORTISTA
+			,ISNULL(a.RFCEmbarcador,'RFCEMBARCADOR*')RFCEMBARCADOR
+			,ISNULL(a.NumRegIdTribEmbarcador,'NUMREDIDTRIBEMBARC*')NUMREDIDTRIBEMBARC
+			,ISNULL(e.Pais,'RESIDENCIAFISLCAEMBARC*')RESIDENCIAFISLCAEMBARC
+			,ISNULL(a.NombreEmbarcador,'NOMBREEMBARCADOR*')NOMBREEMBARCADOR
+			into #CartaPorte_Cabecera_TransporteAereo
+		from OrdenFacturacion_CartaPorte_Cabecera_TransporteAereo a
+			left outer join CartaPorte_TipoPermiso b
+			on a.CartaPorte_TipoPermiso_Id = b.Id
+			left outer join CartaPorte_TransporteAereo c
+			on a.CartaPorte_TransporteAereo_Id = c.Id
+			left outer join CartaPorte_Pais d
+			on a.CartaPorte_Pais_Id_Transporte = d.Id
+			left outer join CartaPorte_Pais e
+			on a.CartaPorte_Pais_Id_Embarco = e.Id
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	
+		insert into #Campote
+		select 
+			'CPORTETRANSAER|'+a.PERMSCT+'|'+a.NUMPERMISOSCT+'|'+a.MATRICULAAERONAVE+
+			'|'+a.NOMBREASERG+'|'+a.NUMPOLIZASEGURO+'|'+a.NUMGUIA+'|'+a.LUGARCONTRATO+
+			'|'+a.RFCTRANSPORTISTA+'|'+a.CODIGOTRANSPORTISTA+'|'+a.NUMREDIDTRIBTRANSPOR+
+			'|'+a.RESIDENCIAFISLCATRANSPOR+'|'+a.NOMBRETRANSPORTISTA+'|'+a.RFCEMBARCADOR+
+			'|'+a.NUMREDIDTRIBEMBARC+'|'+a.RESIDENCIAFISLCAEMBARC+'|'+a.NOMBREEMBARCADOR
+		from #CartaPorte_Cabecera_TransporteAereo a
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+		drop table #CartaPorte_Cabecera_TransporteAereo
+	end
+	if not exists(select * from OrdenFacturacion_CartaPorte_Cabecera_TransporteAereo a
+				  where 1 = 1
+					and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+				 )
+	begin
+	
+		insert into #Campote
+		select 
+			'CPORTETRANSAER|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'+'|'
+	end
+
 	insert into #Campote
 	select 
 		'CPORTETRANSFERR|'+'|'+'|'+'|'+'|'
