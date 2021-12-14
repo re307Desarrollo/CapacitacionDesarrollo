@@ -4,8 +4,9 @@
 	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0
 	,@IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal int = 0
 	,@IdAutoTransporteFederal_Remolque int = 0 
+	,@IdAutoTransporteFederal_Transportista int = 0 
 	,@IdOrdenFacturacion int = 7
-	--,@LetraSerie varchar(max) = 'A'
+	--,@LetraSerie varchar(max) = 'A' #AutoTransporteFederal_Transportista
 
 create table #Campote(
 	campote varchar(max)
@@ -357,9 +358,9 @@ begin
 		--,b.PVP
 		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESOBRUTOTOTAL')PESOBRUTOTOTAL
 		,ISNULL(null,'UNIDADDEPESO')UNIDADDEPESO
-		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETOTOTAL')PESONETOTOTAL
+		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETOTOTAL*')PESONETOTOTAL
 		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'NUMTOTALMERCA')NUMTOTALMERCA
-		,ISNULL(null,'CARGOPORTASACION')CARGOPORTASACION
+		,ISNULL(null,'CARGOPORTASACION*')CARGOPORTASACION
 		into #Procesar_Detalle_Group_CPORTEMERCAS
 	from OrdenFacturacion_CartaPorte_DetalleFactura a
 		left outer join Programa_Circulacion_Completo b
@@ -620,6 +621,127 @@ begin
 	select 
 		'CPORTEDERPASO|'+'|'
 
+	insert into #Campote
+	select 
+		'CPORTECARRO|'+'|'+'|'+'|'
+
+	insert into #Campote
+	select 
+		'CPORTECONTECARR|'+'|'+'|'
+
+	select 
+		a.Id
+		,a.OrdenFacturacion_CartaPorte_Cabecera_Id
+		,ISNULL(b.Clave,'CLASIFICADORTRANS') CLASIFICADORTRANS
+		,ISNULL(a.RFC_Transportista,'RFCTRANSPORTISTA') RFCTRANSPORTISTA
+		,ISNULL(a.NumeroLicencia,'NUMLICENCIA') NUMLICENCIA
+		,ISNULL(a.NombreTransportista,'NOMBRETRANSPORTISTA') NOMBRETRANSPORTISTA
+		,ISNULL(a.NumRegIdTribTransportista,'NUMREGIDTRIBTRANSPORTISTA') NUMREGIDTRIBTRANSPORTISTA
+		,ISNULL(c.Pais,'PAISTRANSPORTISTA') PAISTRANSPORTISTA
+		,ISNULL(a.Calle,'CALLE') CALLE
+		,ISNULL(a.NumeroExterior,'NUMEXT') NUMEXT
+		,ISNULL(a.NumeroInterior,'NUMINT') NUMINT
+		,ISNULL(d.Clave,'COLONIA') COLONIA
+		,ISNULL(e.Clave,'LOCALIADAD') LOCALIADAD
+		,ISNULL(a.Referencia,'REFERENCIA') REFERENCIA
+		,ISNULL(f.Clave,'MUNICIPIO') MUNICIPIO
+		,ISNULL(g.c_Estado,'ESTADO') ESTADO
+		,ISNULL(h.Pais,'PAIS') PAIS
+		,ISNULL(j.Codigo_Postal,'CODIGOPOSTAL') CODIGOPOSTAL
+		,convert(bit,0) Procesada
+		into #AutoTransporteFederal_Transportista
+	from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Transportista a
+		left outer join Maestro_OrdenFacturacion_CalificadorTransporte b
+		on a.Maestro_OrdenFacturacion_CalificadorTransporte_Id = b.Id
+		left outer join CartaPorte_Pais c
+		on a.CartaPorte_Pais_Id_Transportista = c.Id
+		left outer join CartaPorte_Colonia d
+		on a.CartaPorte_Colonia_Id_Transportista = d.Id
+		left outer join CartaPorte_Localidad e
+		on a.CartaPorte_Localidad_Id_Transportista = e.Id
+		left outer join CartaPorte_Municipio f
+		on a.CartaPorte_Municipio_Id_Transportista = f.Id
+		left outer join CartaPorte_Estado g
+		on a.CartaPorte_Estado_Id_Transportista = g.Id
+		left outer join CartaPorte_Pais h
+		on a.CartaPorte_Pais_Id = h.Id
+		left outer join CartaPorte_CodigoPostal j
+		on a.CartaPorte_CodigoPostal_Id_Transportista = j.Id
+	where 1 = 1
+		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+
+	while exists(select top 1 * from #AutoTransporteFederal_Transportista a
+				 where 1 = 1
+					and a.Procesada = 0
+				)
+	begin
+		set @IdAutoTransporteFederal_Transportista = (select top 1 a.Id from #AutoTransporteFederal_Transportista a
+													  where 1 = 1
+														and a.Procesada = 0)
+
+		insert into #Campote
+		select 
+			'CPORTEFIGTRAN|'+a.CLASIFICADORTRANS+'|'+a.RFCTRANSPORTISTA+'|'+a.NUMLICENCIA+
+			'|'+a.NOMBRETRANSPORTISTA+'|'+a.NUMREGIDTRIBTRANSPORTISTA+'|'+a.PAISTRANSPORTISTA+
+			'|'+a.CALLE+'|'+a.NUMEXT+'|'+a.NUMINT+'|'+a.COLONIA+'|'+a.LOCALIADAD+
+			'|'+a.REFERENCIA+'|'+a.MUNICIPIO+'|'+a.ESTADO+'|'+a.PAIS+'|'+a.CODIGOPOSTAL
+		from #AutoTransporteFederal_Transportista a
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+			and a.Id = @IdAutoTransporteFederal_Transportista
+
+		select 
+			ISNULL(b.Clave,'PARTETRANSPORTE') PARTETRANSPORTE
+			,ISNULL(a.Calle,'CALLE') CALLE
+			,ISNULL(a.NumeroExterior,'NUMEXT') NUMEXT
+			,ISNULL(a.NumeroInterior,'NUMINT') NUMINT
+			,ISNULL(d.Clave,'COLONIA') COLONIA
+			,ISNULL(e.Clave,'LOCALIADAD') LOCALIADAD
+			,ISNULL(a.Referencia,'REFERENCIA') REFERENCIA
+			,ISNULL(f.Clave,'MUNICIPIO') MUNICIPIO
+			,ISNULL(g.c_Estado,'ESTADO') ESTADO
+			,ISNULL(h.Pais,'PAIS') PAIS
+			,ISNULL(j.Codigo_Postal,'CODIGOPOSTAL') CODIGOPOSTAL
+			into #AutoTransporteFederal_Transportista_Transporte
+		from OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Transportista_Transporte a
+			left outer join CartaPorte_ConfiguracionAutotransporte b
+			on a.CartaPorte_ConfiguracionAutotransporte_Id = b.Id
+			left outer join CartaPorte_Colonia d
+			on a.CartaPorte_Colonia_Id_Transporte = d.Id
+			left outer join CartaPorte_Localidad e
+			on a.CartaPorte_Localidad_Id_Transporte = e.Id
+			left outer join CartaPorte_Municipio f
+			on a.CartaPorte_Municipio_Id_Transporte = f.Id
+			left outer join CartaPorte_Estado g
+			on a.CartaPorte_Estado_Id_Transporte = g.Id
+			left outer join CartaPorte_Pais h
+			on a.CartaPorte_Pais_Id = h.Id
+			left outer join CartaPorte_CodigoPostal j
+			on a.CartaPorte_CodigoPostal_Id_Transporte = j.Id
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+			and a.OrdenFacturacion_CartaPorte_Cabecera_AutoTransporteFederal_Transportista_Id = @IdAutoTransporteFederal_Transportista
+
+		insert into #Campote
+		select 
+			'CPORTEPARTETRANSP|'+a.PARTETRANSPORTE+'|'+a.CALLE+'|'+a.NUMEXT+
+			'|'+a.NUMINT+'|'+a.COLONIA+'|'+a.LOCALIADAD+'|'+a.REFERENCIA+
+			'|'+a.MUNICIPIO+'|'+a.ESTADO+'|'+a.PAIS+'|'+a.CODIGOPOSTAL
+		from #AutoTransporteFederal_Transportista_Transporte a
+
+		drop table #AutoTransporteFederal_Transportista_Transporte
+		
+		update a
+			set
+				a.Procesada = 1
+		from #AutoTransporteFederal_Transportista a
+		where 1 = 1
+			and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
+			and a.Id = @IdAutoTransporteFederal_Transportista
+	end
+
+	drop table #AutoTransporteFederal_Transportista
+	
 	drop table #ComplementoCartaPorte_Ubicacion
 			  ,#Procesar_Detalle_Group_CPORTEMERCAS
 			  ,#Procesar_Detalle_Group_CPORTEMERCA
