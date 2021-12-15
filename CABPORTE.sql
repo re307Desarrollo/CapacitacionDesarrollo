@@ -357,8 +357,8 @@ begin
 	select 
 		a.OrdenFacturacion_CartaPorte_Cabecera_Id
 		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESOBRUTOTOTAL')PESOBRUTOTOTAL
-		,ISNULL(null,'UNIDADDEPESO')UNIDADDEPESO
-		,ISNULL(CONVERT(varchar,SUM(c.Unit_Weight)),'PESONETOTOTAL*')PESONETOTOTAL
+		,ISNULL(d.Clave,'UNIDADDEPESO')UNIDADDEPESO
+		,ISNULL(null,'PESONETOTOTAL*')PESONETOTOTAL
 		,ISNULL(CONVERT(varchar,SUM(a.Cantidad)),'NUMTOTALMERCA')NUMTOTALMERCA
 		,ISNULL(null,'CARGOPORTASACION*')CARGOPORTASACION
 		into #Procesar_Detalle_Group_CPORTEMERCAS
@@ -367,9 +367,12 @@ begin
 		on a.NoIdentificacion = b.Codigo_Barras COLLATE Modern_Spanish_CI_AS
 		left outer join Maestro_Productos_Dimensiones c
 		on b.ITEM = c.Item COLLATE Modern_Spanish_CI_AS
+		left outer join CartaPorte_UnidadPeso d
+		on a.CartaPorte_UnidadPeso_Id = d.Id
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
+			,d.Clave
 
 	insert into #Campote
 	select 
