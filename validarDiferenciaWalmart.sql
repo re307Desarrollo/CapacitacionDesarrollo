@@ -36,4 +36,4 @@ order by a.Fecha desc
 
 --select * from #VentaWalmart a
 
-drop table #VentaWalmart, #Z_VE_Walmart
+drop table #VentaWalmart, #Z_VE_Walmart--, #Distinct_VentaWalmart
