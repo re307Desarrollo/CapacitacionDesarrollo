@@ -1,7 +1,7 @@
 ﻿declare
 	@IdOrdenFacturacionProcesar int = 0
 	,@IdOrdenFacturacionProcesar_Detalle int = 0
-	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0 --
+	,@IdOrdenFacturacionProcesar_cPORTE_Ubicacion int = 0
 	,@IdDetalle_CPORTEMERCA int = 0
 	,@IdOrdenFacturacionProcesar_Cabecera_AutoTransporteFederal int = 0
 	,@IdAutoTransporteFederal_Remolque int = 0 
@@ -16,11 +16,11 @@ select --top 3
 	a.Id
 	,ISNULL(a.Serie,'SERIE') SERIE
 	,isnull(a.Folio,'FOLIO') FOLIO
-	,isnull(FORMAT( a.FechaC,'ddMMyyyyHHmmss'),'FECHA HORA COMPROBANTE') FECHAHORACOMP
-	,ISNULL(b.Clave,'FO') FO
-	,ISNULL(a.CondPago,'CONDPAGO') CONDPAGO
+	,isnull(FORMAT( a.FechaC,'ddMMyyyyHHmmss'),'FECHAHORACOMPROBANTE') FECHAHORACOMP
+	,ISNULL(b.Clave,'FO*') FO
+	,ISNULL(a.CondPago,'CONDPAGO*') CONDPAGO
 	,ISNULL(convert(varchar,a.SubTotal),'SUBTOTAL') SUBTOTAL
-	,ISNULL(convert(varchar,a.Descuento),'DESCUENTO') DESCUENTO
+	,ISNULL(convert(varchar,a.Descuento),'DESCUENTO*') DESCUENTO
 	,ISNULL(c.Clave,'MON') MON
 	,ISNULL(a.TipoCambio,'TIPOCAMBIO') TIPOCAMBIO
 	,ISNULL(CONVERT(varchar,a.TotalFactura),'TOTFACTURA')TOTFACTURA
@@ -326,8 +326,8 @@ begin
 	begin
 		
 		set @IdOrdenFacturacionProcesar_cPORTE_Ubicacion = (select top 1 a.Id from #ComplementoCartaPorte_Ubicacion a
-													where 1 = 1
-														and a.Procesada = 0)
+															where 1 = 1
+																and a.Procesada = 0)
 
 		insert into #Campote
 		select 
@@ -399,10 +399,10 @@ begin
 		,ISNULL(null,'DESCRIPCIONEMBALAJE*')DESCRIPCIONEMBALAJE
 		,ISNULL(CONVERT(varchar,c.Unit_Weight),'PESOENKG')PESOENKG
 		,ISNULL(null,'VALORMERCANCIA*')VALORMERCANCIA
-		,ISNULL(null,'MONEDA*')MONEDA
+		,ISNULL(g.Clave,'MONEDA*')MONEDA
 		,ISNULL(null,'FRACCIONARANCELARIA*')FRACCIONARANCELARIA
 		,ISNULL(null,'UUIDCOMERCIOEXT*')UUIDCOMERCIOEXT
-		,ISNULL(null,'UNIDADPESO*')UNIDADPESO
+		,ISNULL(h.Clave,'UNIDADPESO*')UNIDADPESO
 		,ISNULL(CONVERT(varchar,c.Unit_Weight),'PESOBRUTO*')PESOBRUTO
 		,ISNULL(CONVERT(varchar,c.Unit_Weight),'PESONETO*')PESONETO
 		,ISNULL(CONVERT(varchar,c.Unit_Weight-c.Unit_Weight),'PESOTARA*')PESOTARA--DIFERENCIA ENTRE PESO NETO Y BRUTO
@@ -419,6 +419,12 @@ begin
 		on a.Maestro_OrdenFacturacion_ClaveUnidad_Id = d.Id
 		left outer join Maestro_OrdenFacturacion_ClaveProductoServicio e
 		on a.Maestro_OrdenFacturacion_ClaveProductoServicio_Id = e.Id
+		left outer join OrdenFacturacion_CartaPorte_Cabecera f
+		on a.OrdenFacturacion_CartaPorte_Cabecera_Id = f.Id
+		left outer join Maestro_OrdenFacturacion_Moneda g
+		on f.Maestro_OrdenFacturacion_Moneda_Id = g.Id
+		left outer join CartaPorte_UnidadPeso h
+		on a.CartaPorte_UnidadPeso_Id = h.Id
 	where 1 = 1
 		and a.OrdenFacturacion_CartaPorte_Cabecera_Id = @IdOrdenFacturacionProcesar
 	--group by a.OrdenFacturacion_CartaPorte_Cabecera_Id
