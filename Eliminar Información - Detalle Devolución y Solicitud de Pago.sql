@@ -29,7 +29,7 @@ begin
 	select 
 		a.Sucursal
 		,a.Oracle
-		,REPLACE(REPLACE(a.Folio,'á',''),' ','')
+		,REPLACE(REPLACE(REPLACE(a.Folio,'á',''),' ',''),'á','')
 		,0
 	from #EliminarDropbox a
 	select * from EliminarDropbox
@@ -83,30 +83,33 @@ and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transac
 
 
 
-select distinct Sucursal, Folio from Devoluciones_AeroBoutiques a
+select distinct Sucursal, Folio from Devoluciones_Dufry a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = @Folio
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
-			and a.Folio like '%'+b.Folio+'%'
+			--and a.Folio like '%'+b.Folio+'%'
 			--and a.Folio = b.Folio
-			and a.Sucursal = b.Sucursal
+			--and a.Sucursal = b.Sucursal
+			and b.Folio = REPLACE(a.Folio,' ','')
+			and b.Sucursal = a.Sucursal
 			)
 
-select * from Devoluciones_AeroBoutiques a
+select * from Devoluciones_Dufry a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = '456'
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
-			and a.Folio like '%'+b.Folio+'%'
+			--and a.Folio like '%'+b.Folio+'%'
 			--and a.Folio = b.Folio
+			and b.Folio = REPLACE(a.Folio,' ','')
 			and a.Sucursal = b.Sucursal
 			)
 
 
-select * from Devoluciones_AeroBoutiques_Reporte_Acumulado a
+select * from Devoluciones_Dufry_Reporte_Acumulado a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -119,7 +122,7 @@ where 1 = 1
 			--and a.Sucursal = b.Sucursal
 			)
 
-select * from Devoluciones_AeroBoutiques_Reporte_Acumulado_porItem a
+select * from Devoluciones_Dufry_Reporte_Acumulado_porItem a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -152,18 +155,19 @@ where 1 = 1
 if @deleteDropbox = 1
 	begin
 		delete a
-		from Devoluciones_AeroBoutiques a
+		from Devoluciones_Dufry a
 		where 1 = 1
 			--and Sucursal = @Sucursal
 			--and Folio = @Folio
 			and exists (select * from [EliminarDropbox] b
 				where 1 = 1	
-					and a.Folio like '%'+b.Folio+'%'
+					--and a.Folio like '%'+b.Folio+'%'
 					--and a.Folio = b.Folio
+					and b.Folio = REPLACE(a.Folio,' ','')
 					and a.Sucursal = b.Sucursal)
 
 		delete a
-		from Devoluciones_AeroBoutiques_Reporte_Acumulado a
+		from Devoluciones_Dufry_Reporte_Acumulado a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
@@ -176,7 +180,7 @@ if @deleteDropbox = 1
 					)
 
 		delete a
-		from Devoluciones_AeroBoutiques_Reporte_Acumulado_porItem a
+		from Devoluciones_Dufry_Reporte_Acumulado_porItem a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio

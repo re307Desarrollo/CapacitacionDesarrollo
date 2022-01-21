@@ -1,5 +1,5 @@
 ﻿declare
-			@FechaSubida date = DATEADD(dd,0,GETDATE())--'2021-10-13'
+			@FechaSubida date = DATEADD(dd,0,GETDATE())
 			,@Walmart int = 0
 			,@FacturasWalmart int = 0
 			,@Cityfresko int = 0

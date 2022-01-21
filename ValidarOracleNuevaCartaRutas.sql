@@ -53,4 +53,4 @@ where 1 = 1
 					where 1 = 1
 						and b.Oracle = c.No_Cliente)
 	--and a.Canal_de_Ventas =
-	and b.Oracle = 21768
+	and b.Oracle = 301025

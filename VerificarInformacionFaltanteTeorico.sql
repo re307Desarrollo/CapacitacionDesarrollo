@@ -2,16 +2,16 @@ declare
 	@Query varchar(max) = ''
 	,@Insertar varchar(max) = 'insert into #'
 	,@Consulta varchar(max) = ' select * from Devoluciones_'
-	,@Cadena varchar(max) = 'PromotoraMusical'
+	,@Cadena varchar(max) = 'CancunAirport'
 	,@Devolucion varchar(max) = 'Devoluciones'
 	,@Reporte_Acumulado varchar(max) = 'Reporte_Acumulado'
 	,@Reporte_Acumulado_Item varchar(max) = 'Reporte_Acumulado_porItem'
 	,@RazonSocial varchar(max) = ''
-	,@Oracle varchar(max) = '2706'--'210202'
+	,@Oracle varchar(max) = '301025'--'210202'
 	,@OracleBD int = null
 	,@OraclePagoBD int = null
 	,@CodigoBD int = null
-	,@Folio varchar(max) = '70615461'
+	,@Folio varchar(max) = 'Dev 4'
 
 CREATE TABLE #Devoluciones(
 	[Sucursal] [varchar](max) NULL,
@@ -64,17 +64,17 @@ and a.ImportePortalesWeb is null
 
 select * from Devoluciones_Carga_ORACLE_Auditoria_SinIVA
 where 1 = 1
-    and Oracle = @Oracle
+    and Oracle = CONVERT(int,@Oracle)
 	and Folio = @Folio
 
 
 select * from Devoluciones_Carga_ORACLE_Auditoria
 where 1 = 1
-    and Oracle = @Oracle
+    and Oracle = CONVERT(int,@Oracle)
 	and Folio = @Folio
 
 set @Query = @Insertar+@Devolucion+@Consulta+@Cadena+' a where 1 = 1 and a.Folio = convert(varchar,'+@Folio+')'
---select @Query
+select @Query Query
 exec(@query)
 select * from #Devoluciones
 select 
@@ -83,14 +83,17 @@ from #Devoluciones a
 group by a.RS
 select @RazonSocial [Razon Social]
 --drop table #Devoluciones
----select @Query as Devo
+--select @Query as Devo
 
-set @Query = @Insertar+@Reporte_Acumulado+@Consulta+@Cadena+'_'+@Reporte_Acumulado+' where 1 = 1 and Folio = '+@Folio
+set @Query = @Insertar+@Reporte_Acumulado+@Consulta+@Cadena+'_'+@Reporte_Acumulado+' where 1 = 1 and Folio = convert(varchar,'+@Folio+')'
+select @Query Query
 exec(@query)
 
 
-set @Query = @Insertar+@Reporte_Acumulado_Item+@Consulta+@Cadena+'_'+@Reporte_Acumulado_Item+' where 1 = 1 and Folio = '+@Folio
+set @Query = @Insertar+@Reporte_Acumulado_Item+@Consulta+@Cadena+'_'+@Reporte_Acumulado_Item+' where 1 = 1 and Folio = convert(varchar,'+@Folio+')'
+select @Query Query
 exec(@query)
+
 if exists(select 
 			*
 		from #Reporte_Acumulado a
@@ -119,7 +122,7 @@ begin
 	
 	select @CodigoBD Reporte_Acumulado_Codigo
 
-	if @CodigoBD = 0
+	if (@CodigoBD = 0 or @CodigoBD is null)
 	begin 
 		--select @OracleBD Reporte_Acumulado_Oracle
 		select 
@@ -130,7 +133,7 @@ begin
 		
 		select @OraclePagoBD ORACLE_Auditoria_SinIVA
 
-		if @OracleBD = 0
+		if (@OracleBD = 0 or @OracleBD is null )
 		begin
 			select 
 				@OraclePagoBD = ISNULL(a.Oracle,0)
@@ -149,7 +152,7 @@ begin
 		,a.Estatus_Pedidos
 	from E_Carta_de_Rutas a
 	where 1 = 1
-		and a.Razon_Social = @RazonSocial
+		--and a.Razon_Social = @RazonSocial
 		and a.No_Cliente in (CONVERT(int,@Oracle),@OracleBD,@OraclePagoBD)
 
 

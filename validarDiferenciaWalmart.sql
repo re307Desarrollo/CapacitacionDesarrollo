@@ -4,9 +4,9 @@
 )
 
 --BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\8.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
-BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\10.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\11.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
-BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\12.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
+BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\12-21.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
+BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\01-22.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 
 select 
 	a.Fecha
@@ -14,7 +14,7 @@ select
 	into #Z_VE_Walmart
 from Z_VE_Walmart a
 where 1 = 1
-	and a.Fecha >= '2021-10-01'
+	and a.Fecha >= '2021-11-01'
 	--and a.Fecha < '2021-10-01'
 group by a.Fecha
 
@@ -36,4 +36,5 @@ order by a.Fecha desc
 
 --select * from #VentaWalmart a
 
-drop table #VentaWalmart, #Z_VE_Walmart--, #Distinct_VentaWalmart
+drop table #VentaWalmart, 
+			#Z_VE_Walmart--, #Distinct_VentaWalmart
