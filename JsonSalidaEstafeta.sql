@@ -1,5 +1,9 @@
-﻿select top 1 
-	[itemDescription].Order_Id as [itemDescription.parcelId]
+﻿declare @Json varchar(max) = null
+
+set @Json = (
+
+select top 1 
+	4 as [itemDescription.parcelId]
 	,isnull(b.Peso ,0)as [itemDescription.weight]
 	,ISNULL(b.Alto,0) as [itemDescription.height]
 	,ISNULL(b.Largo,0) as [itemDescription.length]
@@ -11,6 +15,86 @@
 	,'10131508' as[itemDescription.merchandises.merchandise.productServiceCode]
 	,c.Product_Quantity as[itemDescription.merchandises.merchandise.merchandiseQuantity]
 	,'F63' as[itemDescription.merchandises.merchandise.measurementUnitCode]
+	,'12345678' as[itemDescription.merchandises.merchandise.tariffFraction]
+	,'ABCDed02-a12A-B34B-c56C-c5abcdef61F2' as[itemDescription.merchandises.merchandise.UUIDExteriorTrade]
+	,CONVERT(bit,0) as[itemDescription.merchandises.merchandise.isInternational]
+	,CONVERT(bit,0) as[itemDescription.merchandises.merchandise.isImport]
+	,CONVERT(bit,0) as[itemDescription.merchandises.merchandise.isHazardousMaterial]
+	,'M0035' as[itemDescription.merchandises.merchandise.hazardousMaterialCode]
+	,'4A' as[itemDescription.merchandises.merchandise.packagingCode]
+	,1 as[serviceConfiguration.quantityOfLabels]
+	,'70' as[serviceConfiguration.serviceTypeId]
+	,'112' as[serviceConfiguration.salesOrganization]
+	,CONVERT(varchar,b.FechaVigenciaGuia) as[serviceConfiguration.effectiveDate]
+	,OrigenDestino.Origen_CodigoPosOri as[serviceConfiguration.originZipCodeForRouting]
+	,CONVERT(bit,1) as[serviceConfiguration.isInsurance]
+	,'Shipment contents' as[serviceConfiguration.insurance.contentDescription]
+	,8 as[serviceConfiguration.insurance.declaredValue]
+	,CONVERT(bit,1) as[serviceConfiguration.isReturnDocument]
+	,'DRFZ' as[serviceConfiguration.returnDocument.type]
+	,'60' as[serviceConfiguration.returnDocument.serviceId]
+	,CONVERT(bit,1) as[location.isDRAAlternative]
+	,'Estafeta Mexicana SA de CV' as[location.DRAAlternative.contact.corporateName]
+	,'Luis Godinez' as[location.DRAAlternative.contact.contactName]
+	,'7771798529' as[location.DRAAlternative.contact.cellPhone]
+	,'7771011300' as[location.DRAAlternative.contact.telephone]
+	,'119' as[location.DRAAlternative.contact.phoneExt]
+	,'luis.godezg@estafeta.com' as[location.DRAAlternative.contact.email]
+	,'AOPB010102ROA' as[location.DRAAlternative.contact.taxPayerCode]
+	,CONVERT(bit,1) as[location.DRAAlternative.address.bUsedCode]
+	,'001' as[location.DRAAlternative.address.roadTypeCode]
+	,'string' as[location.DRAAlternative.address.roadTypeAbbName]
+	,'Domingo Diez' as[location.DRAAlternative.address.roadName]
+	,'08-019' as[location.DRAAlternative.address.townshipCode]
+	,'string' as[location.DRAAlternative.address.townshipName]
+	,'001' as[location.DRAAlternative.address.settlementTypeCode]
+	,'string' as[location.DRAAlternative.address.settlementTypeAbbName]
+	,'El Empleado' as[location.DRAAlternative.address.settlementName]
+	,'02' as[location.DRAAlternative.address.stateCode]
+	,'Monterrey' as[location.DRAAlternative.address.stateAbbName]
+	,'62250' as[location.DRAAlternative.address.zipCode]
+	,'484' as[location.DRAAlternative.address.countryCode]
+	,'MEX' as[location.DRAAlternative.address.countryName]
+	,'Junta a Farmacia' as[location.DRAAlternative.address.addressReference]
+	,'La Morelos' as[location.DRAAlternative.address.betweenRoadName1]
+	,'Los Estrada' as[location.DRAAlternative.address.betweenRoadName2]
+	,'-99.12' as[location.DRAAlternative.address.latitude]
+	,'19.48' as[location.DRAAlternative.address.longitude]
+	,'1014' as[location.DRAAlternative.address.externalNum]
+	,'2' as[location.DRAAlternative.address.indoorInformation]
+	,'NA999' as[location.DRAAlternative.address.nave]
+	,'P199' as[location.DRAAlternative.address.platform]
+	,'02' as[location.DRAAlternative.address.localityCode]
+	,'Cozumel' as[location.DRAAlternative.address.localityName]
+	,'Distribuidora Intermex, S.A. de C.V.' as[location.origin.contact.corporateName]
+	,'Julio Medrano' as[location.origin.contact.contactName]
+	,'5555555544' as[location.origin.contact.cellPhone]
+	,'5555555555' as[location.origin.contact.telephone]
+	,'jmedranop@mailito.com' as[location.origin.contact.email]
+	,'AOPB010102ROA' as[location.origin.contact.taxPayerCode]
+	,CONVERT(bit,1) as[location.origin.address.bUsedCode]
+	,'001' as[location.origin.address.roadTypeCode]
+	,'string' as[location.origin.address.roadTypeAbbName]
+	,'Lucio Blanco' as[location.origin.address.roadName]
+	,'08-019' as[location.origin.address.townshipCode]
+	,'string' as[location.origin.address.townshipName]
+	,'Julio Medrano' as[location.origin.address.settlementName]
+	,'02' as[location.origin.address.stateCode]
+	,OrigenDestino.Origen_EstadoOri as[location.origin.address.stateAbbName]
+	,OrigenDestino.Origen_CodigoPosOri as[location.origin.address.zipCode]
+	,'484' as[location.origin.address.countryCode]
+	,'MEX' as[location.origin.address.countryName]
+	,'Frente Cementerio' as[location.origin.address.addressReference]
+	,'La Morelos' as[location.origin.address.betweenRoadName1]
+	,'Los Estrada' as[location.origin.address.betweenRoadName2]
+	,'-99.12' as[location.origin.address.latitude]
+	,'19.48' as[location.origin.address.longitude]
+	,'A' as[location.origin.address.indoorInformation]
+	,'NA999' as[location.origin.address.nave]
+	,'P199' as[location.origin.address.platform]
+	,'02' as[location.origin.address.localityCode]
+	,OrigenDestino.Origen_Municipio as[location.origin.address.localityName]
+	--telephone
 from Shopify_Orders [itemDescription]
 	left outer join Estafeta_Order_Especificaciones b
 	on [itemDescription].Order_Id = b.Order_Id
@@ -18,7 +102,12 @@ from Shopify_Orders [itemDescription]
 	on [itemDescription].Order_Id = c.Order_Id
 	left outer join Shopify_Products product
 	on c.Product_Id = product.Product_Id
+	left outer join Estafeta_Order_OrigenDestino OrigenDestino
+	on [itemDescription].Order_Id = OrigenDestino.Order_Id
 where 1 = 1
 	and b.Estafeta_Guia is null
 	and itemDescription.Order_Id = '4649319399668'
 FOR JSON PATH
+)
+
+select @Json
