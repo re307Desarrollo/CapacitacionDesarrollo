@@ -2,8 +2,19 @@
 
 set @Json = (
 
-select top 1 
-	4 as [itemDescription.parcelId]
+select top 1
+	'01' as [identification.suscriberId]
+	,'0000000' as [identification.customerNumber]
+	,'AP01' as [systemInformation.id]
+	,'AP01' as [systemInformation.name]
+	,'1.10.20' as [systemInformation.version]
+	,'string' as [labelDefinition.wayBillDocument.aditionalInfo]
+	,'Documents' as [labelDefinition.wayBillDocument.content]
+	,'SPMXA12345' as [labelDefinition.wayBillDocument.costCenter]
+	,null as [labelDefinition.wayBillDocument.customerShipmentId]
+	,'Ref1' as [labelDefinition.wayBillDocument.referenceNumber]
+	,null as [labelDefinition.wayBillDocument.groupShipmentId]
+	,4 as [itemDescription.parcelId]
 	,isnull(b.Peso ,0)as [itemDescription.weight]
 	,ISNULL(b.Alto,0) as [itemDescription.height]
 	,ISNULL(b.Largo,0) as [itemDescription.length]
@@ -110,4 +121,4 @@ where 1 = 1
 FOR JSON PATH
 )
 
-select @Json
+select @Json JsonResult
