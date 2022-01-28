@@ -18,25 +18,25 @@ select top 1
 	,'Ref1' as [labelDefinition.wayBillDocument.referenceNumber]
 	,'null' as [labelDefinition.wayBillDocument.groupShipmentId]
 	,4 as [labelDefinition.itemDescription.parcelId]
-	,isnull(b.Peso ,0)as [labelDefinition.itemDescription.weight]
-	,ISNULL(b.Alto,0) as [labelDefinition.itemDescription.height]
-	,ISNULL(b.Largo,0) as [labelDefinition.itemDescription.length]
-	,ISNULL(b.Ancho,0) as [labelDefinition.itemDescription.width]
-	,121.1 as [labelDefinition.itemDescription.merchandises.totalGrossWeight]
-	,'XLU' as[labelDefinition.itemDescription.merchandises.weightUnitCode]
-	,product.Price as[labelDefinition.itemDescription.merchandises.merchandise.merchandiseValue]
-	,'MXN' as[labelDefinition.itemDescription.merchandises.merchandise.currency]
-	,'10131508' as[labelDefinition.itemDescription.merchandises.merchandise.productServiceCode]
-	,c.Product_Quantity as[labelDefinition.itemDescription.merchandises.merchandise.merchandiseQuantity]
-	,'F63' as[labelDefinition.itemDescription.merchandises.merchandise.measurementUnitCode]
-	,'12345678' as[labelDefinition.itemDescription.merchandises.merchandise.tariffFraction]
-	,'ABCDed02-a12A-B34B-c56C-c5abcdef61F2' as[labelDefinition.itemDescription.merchandises.merchandise.UUIDExteriorTrade]
-	,CONVERT(bit,0) as[labelDefinition.itemDescription.merchandises.merchandise.isInternational]
-	,CONVERT(bit,0) as[labelDefinition.itemDescription.merchandises.merchandise.isImport]
-	,CONVERT(bit,0) as[labelDefinition.itemDescription.merchandises.merchandise.isHazardousMaterial]
-	,'M0035' as[labelDefinition.itemDescription.merchandises.merchandise.hazardousMaterialCode]
-	,'4A' as[labelDefinition.itemDescription.merchandises.merchandise.packagingCode]
-	,1 as[labelDefinition.serviceConfiguration.quantityOfLabels]
+	,isnull(CAST(b.Peso as decimal(18,2)) ,0)as [labelDefinition.itemDescription.weight]
+	,ISNULL(CAST(b.Alto as decimal(18,2)),0) as [labelDefinition.itemDescription.height]
+	,ISNULL(CAST(b.Largo as decimal(18,2)),0) as [labelDefinition.itemDescription.length]
+	,ISNULL(CAST(b.Ancho as decimal(18,2)),0) as [labelDefinition.itemDescription.width]
+	--,121.1 as [labelDefinition.itemDescription.merchandises.totalGrossWeight]
+	--,'XLU' as[labelDefinition.itemDescription.merchandises.weightUnitCode]
+	--,product.Price as[labelDefinition.itemDescription.merchandises.merchandise.merchandiseValue]
+	--,'MXN' as[labelDefinition.itemDescription.merchandises.merchandise.currency]
+	--,'10131508' as[labelDefinition.itemDescription.merchandises.merchandise.productServiceCode]
+	--,c.Product_Quantity as[labelDefinition.itemDescription.merchandises.merchandise.merchandiseQuantity]
+	--,'F63' as[labelDefinition.itemDescription.merchandises.merchandise.measurementUnitCode]
+	--,'12345678' as[labelDefinition.itemDescription.merchandises.merchandise.tariffFraction]
+	--,'ABCDed02-a12A-B34B-c56C-c5abcdef61F2' as[labelDefinition.itemDescription.merchandises.merchandise.UUIDExteriorTrade]
+	--,CONVERT(bit,0) as[labelDefinition.itemDescription.merchandises.merchandise.isInternational]
+	--,CONVERT(bit,0) as[labelDefinition.itemDescription.merchandises.merchandise.isImport]
+	--,CONVERT(bit,0) as[labelDefinition.itemDescription.merchandises.merchandise.isHazardousMaterial]
+	--,'M0035' as[labelDefinition.itemDescription.merchandises.merchandise.hazardousMaterialCode]
+	--,'4A' as[labelDefinition.itemDescription.merchandises.merchandise.packagingCode]
+	--,1 as[labelDefinition.serviceConfiguration.quantityOfLabels]
 	,'70' as[labelDefinition.serviceConfiguration.serviceTypeId]
 	,'112' as[labelDefinition.serviceConfiguration.salesOrganization]
 	,CONVERT(varchar,b.FechaVigenciaGuia) as[labelDefinition.serviceConfiguration.effectiveDate]
@@ -182,8 +182,8 @@ from Shopify_Orders [itemDescription]
 	on [itemDescription].Order_Id = OrigenDestino.Order_Id
 where 1 = 1
 	and b.Estafeta_Guia is null
-	and itemDescription.Order_Id = '4649319399668'
+	and itemDescription.Order_Id = '4632968495348'
 FOR JSON PATH
 )
 
-select REPLACE(@Json,'"null"','null') JsonResult
+select REPLACE(REPLACE(REPLACE(@Json,'"null"','null'),'[',''),']','')  JsonResult
