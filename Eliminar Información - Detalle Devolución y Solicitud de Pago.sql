@@ -83,7 +83,7 @@ and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transac
 
 
 
-select distinct Sucursal, Folio from Devoluciones_Dufry a
+select distinct Sucursal, Folio from Devoluciones_CAPU a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = @Folio
@@ -96,7 +96,7 @@ where 1 = 1
 			and b.Sucursal = a.Sucursal
 			)
 
-select * from Devoluciones_Dufry a
+select * from Devoluciones_CAPU a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = '456'
@@ -109,7 +109,7 @@ where 1 = 1
 			)
 
 
-select * from Devoluciones_Dufry_Reporte_Acumulado a
+select * from Devoluciones_CAPU_Reporte_Acumulado a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -122,7 +122,7 @@ where 1 = 1
 			--and a.Sucursal = b.Sucursal
 			)
 
-select * from Devoluciones_Dufry_Reporte_Acumulado_porItem a
+select * from Devoluciones_CAPU_Reporte_Acumulado_porItem a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -155,7 +155,7 @@ where 1 = 1
 if @deleteDropbox = 1
 	begin
 		delete a
-		from Devoluciones_Dufry a
+		from Devoluciones_CAPU a
 		where 1 = 1
 			--and Sucursal = @Sucursal
 			--and Folio = @Folio
@@ -167,7 +167,7 @@ if @deleteDropbox = 1
 					and a.Sucursal = b.Sucursal)
 
 		delete a
-		from Devoluciones_Dufry_Reporte_Acumulado a
+		from Devoluciones_CAPU_Reporte_Acumulado a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
@@ -180,7 +180,7 @@ if @deleteDropbox = 1
 					)
 
 		delete a
-		from Devoluciones_Dufry_Reporte_Acumulado_porItem a
+		from Devoluciones_CAPU_Reporte_Acumulado_porItem a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
