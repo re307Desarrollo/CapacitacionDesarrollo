@@ -17,18 +17,18 @@ select top 1
 	,'null' as [labelDefinition.wayBillDocument.customerShipmentId]
 	,'null' as [labelDefinition.wayBillDocument.groupShipmentId]
 	,'PRUEBASESTAFETALABELQA' as [labelDefinition.wayBillDocument.referenceNumber]
-	,4 as [labelDefinition.itemDescription.parcelId]
+	,1 as [labelDefinition.itemDescription.parcelId]
 	,isnull(CAST(b.Peso as decimal(18,2)),0)as [labelDefinition.itemDescription.weight]
 	,ISNULL(CONVERT(int,CEILING(b.Alto)),0) as [labelDefinition.itemDescription.height]
 	,ISNULL(CONVERT(int,CEILING(b.Largo)),0) as [labelDefinition.itemDescription.length]
 	,ISNULL(CONVERT(int,CEILING(b.Ancho)),0) as [labelDefinition.itemDescription.width]
 	,ISNULL(CONVERT(varchar,b.FechaVigenciaGuia),'20211201') as[labelDefinition.serviceConfiguration.effectiveDate]
 	,'Shipment contents' as[labelDefinition.serviceConfiguration.insurance.contentDescription]
-	,CAST(a.Order_Ammount as decimal(18,2)) as[labelDefinition.serviceConfiguration.insurance.declaredValue]--
+	,CAST(a.Order_Ammount as decimal(18,2)) as[labelDefinition.serviceConfiguration.insurance.declaredValue]
 	,CONVERT(bit,1) as[labelDefinition.serviceConfiguration.isInsurance]
 	,CONVERT(bit,0) as[labelDefinition.serviceConfiguration.isReturnDocument]
 	,1 as[labelDefinition.serviceConfiguration.quantityOfLabels]
-	,ISNULL(OrigenDestino.Origen_CodigoPosOri,'NoAsig') as[labelDefinition.serviceConfiguration.originZipCodeForRouting]
+	,ISNULL(OrigenDestino.Origen_CodigoPosOri,'02400') as[labelDefinition.serviceConfiguration.originZipCodeForRouting]
 	,'112' as[labelDefinition.serviceConfiguration.salesOrganization]
 	,'70' as[labelDefinition.serviceConfiguration.serviceTypeId]
 	,'null' as[labelDefinition.location.destination.deliveryPUDOCode]
@@ -39,8 +39,8 @@ select top 1
 	,'484' as[labelDefinition.location.destination.homeAddress.address.countryCode]
 	,'1003' as[labelDefinition.location.destination.homeAddress.address.externalNum]
 	,'A' as[labelDefinition.location.destination.homeAddress.address.indoorInformation]
-	,'-99.12' as[labelDefinition.location.destination.homeAddress.address.latitude]
-	,'19.48' as[labelDefinition.location.destination.homeAddress.address.longitude]
+	,a.Billing_Address_Longitude as[labelDefinition.location.destination.homeAddress.address.latitude]
+	,a.Billing_Address_Latitude as[labelDefinition.location.destination.homeAddress.address.longitude]
 	,'NA999' as[labelDefinition.location.destination.homeAddress.address.nave]
 	,'P199' as[labelDefinition.location.destination.homeAddress.address.platform]
 	,'Lucio Blanco' as[labelDefinition.location.destination.homeAddress.address.roadName]
@@ -49,7 +49,7 @@ select top 1
 	,'001' as[labelDefinition.location.destination.homeAddress.address.settlementTypeCode]
 	,'02' as[labelDefinition.location.destination.homeAddress.address.stateCode]
 	,'08-019' as[labelDefinition.location.destination.homeAddress.address.townshipCode]
-	,OrigenDestino.Destino_CpDestino as[labelDefinition.location.destination.homeAddress.address.zipCode]
+	,a.Billing_Address_Zip as[labelDefinition.location.destination.homeAddress.address.zipCode]
 	,'7771798529' as[labelDefinition.location.destination.homeAddress.contact.cellPhone]
 	,a.Shipping_Address_First_Name+' '+a.Shipping_Address_Last_Name as[labelDefinition.location.destination.homeAddress.contact.contactName]
 	,a.Shipping_Address_First_Name+' '+a.Shipping_Address_Last_Name as[labelDefinition.location.destination.homeAddress.contact.corporateName]
@@ -75,7 +75,7 @@ select top 1
 	,'001' as[labelDefinition.location.origin.address.settlementTypeCode]
 	,'02' as[labelDefinition.location.origin.address.stateCode]
 	,'08-019' as[labelDefinition.location.origin.address.townshipCode]
-	,OrigenDestino.Origen_CodigoPosOri as[labelDefinition.location.origin.address.zipCode]
+	,ISNULL(OrigenDestino.Origen_CodigoPosOri,'02400') as[labelDefinition.location.origin.address.zipCode]
 	,'5555555544' as[labelDefinition.location.origin.contact.cellPhone]
 	,'Julio Medrano' as[labelDefinition.location.origin.contact.contactName]
 	,'Distribuidora Intermex, S.A. de C.V.' as[labelDefinition.location.origin.contact.corporateName]
@@ -93,7 +93,7 @@ from Shopify_Orders a
 	on a.Order_Id = OrigenDestino.Order_Id
 where 1 = 1
 	and b.Estafeta_Guia is null
-	and a.Order_Id = '3020973899926'
+	and a.Order_Id = '4632968495348'
 FOR JSON PATH
 )
 
