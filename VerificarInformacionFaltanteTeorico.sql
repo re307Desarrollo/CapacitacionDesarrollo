@@ -2,16 +2,16 @@ declare
 	@Query varchar(max) = ''
 	,@Insertar varchar(max) = 'insert into #'
 	,@Consulta varchar(max) = ' select * from Devoluciones_'
-	,@Cadena varchar(max) = 'CancunAirport'
+	,@Cadena varchar(max) = 'CAPU'--Devoluciones_CAPU_Subir
 	,@Devolucion varchar(max) = 'Devoluciones'
 	,@Reporte_Acumulado varchar(max) = 'Reporte_Acumulado'
 	,@Reporte_Acumulado_Item varchar(max) = 'Reporte_Acumulado_porItem'
 	,@RazonSocial varchar(max) = ''
-	,@Oracle varchar(max) = '301025'--'210202'
+	,@Oracle varchar(max) = '90395'--'210202'
 	,@OracleBD int = null
 	,@OraclePagoBD int = null
 	,@CodigoBD int = null
-	,@Folio varchar(max) = 'Dev 4'
+	,@Folio varchar(max) = 'OM22000128'
 
 CREATE TABLE #Devoluciones(
 	[Sucursal] [varchar](max) NULL,

@@ -2,7 +2,7 @@
 use [Global]
 declare 
 	@Nombre varchar(max) = 'veronica' --Nombre del usuario 
-			  ,@VERIFICAR INT = 2 --1 verificas, 2 desbloqueas
+			  ,@VERIFICAR INT = 1 --1 verificas, 2 desbloqueas
 		,@Accion varchar(max)= 'f' --F:Logistica Directa --D:Logistica Inversa
 if @VERIFICAR = 1
 begin

@@ -3,7 +3,7 @@
 			,@Walmart int = 0
 			,@FacturasWalmart int = 0
 			,@Cityfresko int = 0
-			,@HEB int = 
+			,@HEB int = 0
 			,@Sanborns int = 0
 			,@Soriana int = 0
 			,@OXXO int = 0

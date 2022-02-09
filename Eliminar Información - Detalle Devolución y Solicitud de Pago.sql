@@ -51,6 +51,7 @@ declare
 if @deleteDropbox = 0
 begin
 
+select 'Pago'
 select cr.Razon_Social, a.* 
 from Devoluciones_Pagos a
 	left outer join E_Carta_de_Rutas cr
@@ -82,7 +83,7 @@ and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transac
 --order by [Importe Oracle]
 
 
-
+select 'Devolucion Sucursal Folio unicos'
 select distinct Sucursal, Folio from Devoluciones_CAPU a
 where 1 = 1
 	--and Sucursal = @Sucursal
@@ -90,12 +91,12 @@ where 1 = 1
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
 			--and a.Folio like '%'+b.Folio+'%'
-			--and a.Folio = b.Folio
+			and a.Folio = b.Folio
 			--and a.Sucursal = b.Sucursal
-			and b.Folio = REPLACE(a.Folio,' ','')
+			--and b.Folio = REPLACE(a.Folio,' ','')
 			and b.Sucursal = a.Sucursal
 			)
-
+select 'Devolucion informacion completa'
 select * from Devoluciones_CAPU a
 where 1 = 1
 	--and Sucursal = @Sucursal
@@ -103,12 +104,12 @@ where 1 = 1
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
 			--and a.Folio like '%'+b.Folio+'%'
-			--and a.Folio = b.Folio
-			and b.Folio = REPLACE(a.Folio,' ','')
+			and a.Folio = b.Folio
+			--and b.Folio = REPLACE(a.Folio,' ','')
 			and a.Sucursal = b.Sucursal
 			)
 
-
+select 'Reporte acumulado'
 select * from Devoluciones_CAPU_Reporte_Acumulado a
 where 1 = 1
 	--and cliente = @Oracle
@@ -117,11 +118,11 @@ where 1 = 1
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
 			and a.cliente = b.Oracle
-			and a.Folio like '%'+b.Folio+'%'
-			--and a.Folio = b.Folio
+			--and a.Folio like '%'+b.Folio+'%'
+			and a.Folio = b.Folio
 			--and a.Sucursal = b.Sucursal
 			)
-
+select 'Reporte acomulado por Item'
 select * from Devoluciones_CAPU_Reporte_Acumulado_porItem a
 where 1 = 1
 	--and cliente = @Oracle
@@ -130,12 +131,12 @@ where 1 = 1
 		and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
 			and a.cliente = b.Oracle
-			and a.Folio like '%'+b.Folio+'%'
-			--and a.Folio = b.Folio
+			--and a.Folio like '%'+b.Folio+'%'
+			and a.Folio = b.Folio
 			--and a.Sucursal = b.Sucursal
 			)
 
-
+select 'Acreditacion portales web'
 select * from AcreditacionPortalesWeb a
 where 1 = 1
 	--and cliente = @Oracle
@@ -162,8 +163,8 @@ if @deleteDropbox = 1
 			and exists (select * from [EliminarDropbox] b
 				where 1 = 1	
 					--and a.Folio like '%'+b.Folio+'%'
-					--and a.Folio = b.Folio
-					and b.Folio = REPLACE(a.Folio,' ','')
+					and a.Folio = b.Folio
+					--and b.Folio = REPLACE(a.Folio,' ','')
 					and a.Sucursal = b.Sucursal)
 
 		delete a
@@ -174,8 +175,8 @@ if @deleteDropbox = 1
 			and exists (select * from [EliminarDropbox] b
 				where 1 = 1	
 					and a.cliente = b.Oracle
-					and a.Folio like '%'+b.Folio+'%'
-					--and a.Folio = b.Folio
+					--and a.Folio like '%'+b.Folio+'%'
+					and a.Folio = b.Folio
 					--and a.Sucursal = b.Sucursal
 					)
 
@@ -187,8 +188,8 @@ if @deleteDropbox = 1
 				and exists (select * from [EliminarDropbox] b
 				where 1 = 1	
 					and a.cliente = b.Oracle
-					and a.Folio like '%'+b.Folio+'%'
-					--and a.Folio = b.Folio
+					--and a.Folio like '%'+b.Folio+'%'
+					and a.Folio = b.Folio
 					--and a.Sucursal = b.Sucursal
 					)
 	end
