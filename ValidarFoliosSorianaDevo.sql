@@ -3,22 +3,27 @@
 	,Fecha varchar(max)
 	,Sucursal varchar(max)
 	,Importe_Cabecero varchar(max)
+	,IEPS varchar(max)
+	,IVA varchar(max)
 	,Total_Dent varchar(max)
 	,CB varchar(max)
 	,Unidades int
 	,CostoB varchar(max)
 	,CostoN varchar(max)
 )
-BULK INSERT #FoliosSorianSolicitados_Limpia FROM 'H:\Desarrollo\FoliosSoriana.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
+BULK INSERT #FoliosSorianSolicitados_Limpia FROM 'H:\Desarrollo\FoliosSoriana.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 2);
 
 select 
 	a.Folio
 	,a.Fecha
 	,a.Sucursal
 	,REPLACE(a.Importe_Cabecero,'-á','') Importe_Cabecero
+	,convert(float,REPLACE(REPLACE(REPLACE(a.IEPS,'$',''),',',''),'"','')) IEPS
+	,convert(float,REPLACE(REPLACE(REPLACE(a.IVA,'$',''),',',''),'"','')) IVA
+	,CB
 	,a.Unidades
-	,convert(float,REPLACE(REPLACE(a.CostoB,'$',''),',','')) CostoB
-	,convert(float,REPLACE(REPLACE(a.CostoN,'$',''),',','')) CostoN
+	,convert(float,REPLACE(REPLACE(REPLACE(a.CostoB,'$',''),',',''),'"','')) CostoB
+	,convert(float,REPLACE(REPLACE(REPLACE(a.CostoN,'$',''),',',''),'"','')) CostoN
 	into #FoliosSorianSolicitados
 from #FoliosSorianSolicitados_Limpia a
 
@@ -37,9 +42,9 @@ group by
 	 ,a.Sucursal
 	 ,a.Importe_Cabecero
 
---select 
---	* 
---from #FoliosSorianaSolicitados a
+select 
+	* 
+from #FoliosSorianaSolicitados a
 
 select  
 	 a.Folio
@@ -205,7 +210,7 @@ where 1 = 1
 
 
 drop table #FoliosSorianSolicitados_Limpia,
-			#FoliosSorianSolicitados,
+			#FoliosSorianSolicitados ,
 			#FoliosSorianaSolicitados,
 			#Z_DV_Soriana,
 			#Z_DV_Soriana_DescargaIncompleta_,

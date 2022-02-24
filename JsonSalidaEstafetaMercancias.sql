@@ -12,7 +12,7 @@ from Shopify_Order_Products a
 	left outer join Shopify_Products b
 	on a.Product_Id = b.Product_Id
 where 1 = 1
-	and a.Order_Id = '4659297452276'
+	and a.Order_Id = '4659149570292'
 
 select 
 	a.Order_Id
@@ -21,7 +21,7 @@ select
 	into #merchandises
 from #Shopify_Order_Products a
 where 1 = 1
-	and a.Order_Id = '4659297452276'
+	and a.Order_Id = '4659149570292'
 group by 
 	a.Order_Id
 	,a.weightUnitCode
@@ -57,7 +57,7 @@ select
 	)as [merchandises.merchandise]
 from #merchandises a
 where 1 = 1
-	and a.Order_Id = '4659297452276'
+	and a.Order_Id = '4659149570292'
 FOR JSON PATH)
 
 

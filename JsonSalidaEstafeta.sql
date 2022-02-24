@@ -17,6 +17,8 @@
 	,@GenerarGuia_origineCountry varchar(max) = 'MEX'
 	,@GenerarGuia_zipOrigen varchar(max)= '02400'
 	,@GenerarGuia_originExternalNumber varchar(max)= '1003'
+	,@GenerarGuia_origintaxPayerCode varchar(max) ='DIN8705087D7'
+	,@GenerarGuia_destinationtaxPayerCode varchar(max) ='XAXX010101000'
 
 
 
@@ -33,7 +35,7 @@ from Shopify_Order_Products a
 	left outer join Shopify_Products b
 	on a.Product_Id = b.Product_Id
 where 1 = 1
-	and a.Order_Id = '4659297452276'
+	and a.Order_Id = '4659149570292'
 
 select 
 	a.Order_Id
@@ -42,10 +44,12 @@ select
 	into #merchandises
 from #Shopify_Order_Products a
 where 1 = 1
-	and a.Order_Id = '4659297452276'
+	and a.Order_Id = '4659149570292'
 group by 
 	a.Order_Id
 	,a.weightUnitCode
+
+
 set @JsonMercancia =(
 
 select 
@@ -77,6 +81,7 @@ where 1 = 1
 	and a.Order_Id = '4659297452276'
 FOR JSON PATH)
 
+select @JsonMercancia
 
 set @JsonMercancia = SUBSTRING(@JsonMercancia,CHARINDEX(':{',@JsonMercancia,0)+1,(LEN(@JsonMercancia)-CHARINDEX(':{',@JsonMercancia,0))-2)
 
@@ -141,6 +146,7 @@ select
 	,'na@na.na' as[labelDefinition.location.origin.contact.email]
 	,'NA' as[labelDefinition.location.origin.contact.phoneExt]
 	,'NA' as[labelDefinition.location.origin.contact.telephone]
+	,@GenerarGuia_origintaxPayerCode as[labelDefinition.location.origin.contact.taxPayerCode]
 	,CONVERT(bit,0) as[labelDefinition.location.isDRAAlternative]
 	,'null' as[labelDefinition.location.destination.deliveryPUDOCode]
 	,CONVERT(bit,0) as[labelDefinition.location.destination.homeAddress.address.bUsedCode]
@@ -173,6 +179,7 @@ select
 	,ISNULL(a.Email,'na@na.na') as[labelDefinition.location.destination.homeAddress.contact.email]
 	,'null' as[labelDefinition.location.destination.homeAddress.contact.phoneExt]
 	,ISNULL(a.Billing_Address_Phone,'NA') as[labelDefinition.location.destination.homeAddress.contact.telephone]
+	,@GenerarGuia_destinationtaxPayerCode as[labelDefinition.location.destination.homeAddress.contact.taxPayerCode]
 	,CONVERT(bit,0) as[labelDefinition.location.destination.isDeliveryToPUDO]
 from Shopify_Orders a
 	left outer join Estafeta_Order_Especificaciones b
@@ -187,7 +194,7 @@ from Shopify_Orders a
 	on a.Order_Id = OrigenDestino.Order_Id
 where 1 = 1
 	and b.Estafeta_Guia is null
-	and a.Order_Id = '4658828574964'
+	and a.Order_Id = '4659149570292'
 FOR JSON PATH
 )
 

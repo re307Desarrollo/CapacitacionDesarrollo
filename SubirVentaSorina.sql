@@ -1,6 +1,6 @@
 ﻿--exec Automatizacion_Soriana @Accion ='Subir_Ventas_Soriana_Espejo'
 exec Automatizacion_Soriana @Accion ='Subir_Ventas_Soriana'
-	,@FileName='VTA764120220213-1.txt'
+	,@FileName='VTA764120220222-1.txt'
 
 return
 

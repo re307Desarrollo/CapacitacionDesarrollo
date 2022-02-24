@@ -61,9 +61,9 @@ where 1 = 1
 	/*Ventas de Portal End*/
 
 
-	and Sp_Padre = 'Automatizacion_Chedraui' or Sp like '%Automatizacion_Liverpool_SKU%'
+	--and Sp_Padre = 'Automatizacion_Chedraui' or Sp like '%Automatizacion_Liverpool_SKU%'
 	--and Sp_Padre = 'dbo.Ecommerce_TuShoppi.Admin'
-	--and Sp = 'Devoluciones_Pagos_Subir' or Sp_Padre = 'Devoluciones_Master_Subir'
+	and Sp = 'Devoluciones_Pagos_Subir' or Sp_Padre = 'Devoluciones_Master_Subir'
 	--and Tabla = 'Devoluciones_Soriana'
 
 	--and Sp = 'TresxTres_AlimentacionDevolucionesPortal_AsignacionFechaRecoleccion_1'
