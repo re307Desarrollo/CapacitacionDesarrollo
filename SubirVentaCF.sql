@@ -37,6 +37,7 @@ select
 	,a.Venta_U
 	,a.Venta_$
 	,1
+	,GETDATE()
 from #VentaCF a
 where 1 = 1
 	and a.Venta_U is not null
@@ -55,6 +56,17 @@ where 1 = 1
 group by a.Fecha
 order by a.Fecha desc
 
-select * from Z_VE_Cityfresko
+
+
+--select * from Z_VE_Cityfresko a
+--where 1 = 1
+--	and a.FECHA = '2022-02-07'
+--order by a.CB desc, a.SUCURSAL desc
+
+
+--select * from #VentaCF a
+--where 1 = 1
+--	and a.FECHA = '2022-02-07'
+--order by a.UPC desc, a.STR_ID desc
 
 --drop table #VentaCF
