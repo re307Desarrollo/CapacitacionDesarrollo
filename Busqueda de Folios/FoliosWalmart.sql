@@ -1,5 +1,5 @@
 ﻿declare
-	@NC varchar(max) = '0138455148,0111048142,0111048140,'
+	@NC varchar(max) = '0110079330,'
 
 create table #NCs(
 	NC varchar(max)
@@ -42,4 +42,15 @@ select * from Z_DV_Pagadas_Walmart_DescargaIncompleta a
 where 1 = 1
 	and a.Folio in (select * from #NCs)
 order by a.FechaPago desc
+
+drop table #NCs
+
+return
+
+--insert into Z_DV_Pendientes_Walmart
+--select 
+--	* 
+--from Z_DV_Pendientes_Walmart_DescargaIncompleta a
+--where 1 = 1
+--	and a.Folio = '0110079330'
 
