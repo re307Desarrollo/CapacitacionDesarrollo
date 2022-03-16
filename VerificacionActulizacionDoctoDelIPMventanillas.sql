@@ -1,6 +1,6 @@
 ﻿declare
 	@Accion int  = 1
-	,@Documento varchar(max) = '6978268'
+	,@Documento varchar(max) = '7003457'
 
 
 if @Accion = 1
