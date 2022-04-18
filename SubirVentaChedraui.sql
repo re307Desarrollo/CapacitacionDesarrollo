@@ -32,13 +32,19 @@
 --BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-01-02.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 --BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-01-03.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 --BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-01-04.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
-BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-01-07_12.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
+BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-04-04.txt' WITH (FIELDTERMINATOR= '|',FIRSTROW = 1);
+
+--select * from #VentaChedraui
 
 
 delete a
 from #VentaChedraui a
 where 1 = 1
 	and ISNUMERIC(a.Column7) = 0
+
+
+--select * from #VentaChedraui
+
 
 select 
 	SUBSTRING(a.Column1,0,5)+'-'+SUBSTRING(a.Column1,5,2)+'-'+SUBSTRING(a.Column1,7,2) Fecha
@@ -53,7 +59,7 @@ select
 	--,a.Column7
 	,1 COD_p
 	--,GETDATE() FechaSubida
-	,a.Column3+' '+a.Column4 Nombresucursal
+	,TRIM(a.Column3)+' '+a.Column4 Nombresucursal
 	into #Z_VE_Chedraui_Subida
 from #VentaChedraui a
 
@@ -79,6 +85,9 @@ group by
 	,a.SKU
 	,a.Sucursal
 	,a.Nombresucursal
+
+--select * from #Final
+--select top 100 * from Z_VE_Chedraui
 
 --select top 1 
 --	* 

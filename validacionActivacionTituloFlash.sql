@@ -5,7 +5,7 @@ SELECT TOP (1000) [Id]
       ,[Editor]
   FROM [Global].[dbo].[Maestro_Productos_FlashActivo]
   where 1 = 1
-    and Id = '34129611'
+    and Id = '34129111'
 
 
     return
@@ -15,7 +15,7 @@ SELECT TOP (1000) [Id]
     set a.IsFlashActive = 1
         from [Maestro_Productos_FlashActivo] a
         where 1 = 1
-    and Id = '34129611'
+    and Id = '34129111'
  
 
 

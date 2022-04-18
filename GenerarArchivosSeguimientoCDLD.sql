@@ -1,5 +1,5 @@
 ﻿declare
-	@FechaSubida date = DATEADD(dd,-1,GETDATE())--solo diminuir el -1, para los fines de semana que seria hasta -3
+	@FechaSubida date = DATEADD(dd,-3,GETDATE())--solo diminuir el -1, para los fines de semana que seria hasta -3
 	,@Fecha varchar(max) = null
 	,@Valida int = 0
 	,@DocumentoDuplicado int = 0

@@ -63,7 +63,8 @@ where 1 = 1
 		where 1 = 1	
 			and a.Oracle = b.Oracle
 			and a.Folio = b.Folio
-			and a.Sucursal = b.Sucursal)
+			and a.Sucursal = b.Sucursal
+		)
 --and a.[Nota Crédito] is not null
 and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transacciones ya estan en Oreacle
 --and a.Folio = '456'
@@ -205,7 +206,8 @@ if @deletePago = 1
 				where 1 = 1	
 					and a.Oracle = b.Oracle
 					and a.Folio = b.Folio
-					and a.Sucursal = b.Sucursal)
+					and a.Sucursal = b.Sucursal
+					)
 		--and a.[Nota Crédito] is not null
 		and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transacciones ya estan en Oreacle
 

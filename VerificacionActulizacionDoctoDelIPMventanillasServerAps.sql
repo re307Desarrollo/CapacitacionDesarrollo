@@ -1,6 +1,7 @@
-﻿declare
+﻿use [Global]
+declare
 	@Accion int  = 1
-	,@Documento varchar(max) = '7003457'
+	,@Documento varchar(max) = '7007377'
 
 
 if @Accion = 1
