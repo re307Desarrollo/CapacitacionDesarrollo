@@ -4,7 +4,7 @@
 declare  
 		 
 		 @Walmart int = 0
-		,@Sanborns int = 0 
+		,@Sanborns int = 0
 		,@Soriana int = 0
 		,@Cityfresko int = 0
 		,@Chedraui int = 0

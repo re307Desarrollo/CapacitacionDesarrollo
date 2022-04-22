@@ -1,5 +1,5 @@
 ﻿declare
-	@NC varchar(max) = '0111048140,0111048142,0138455148,'--'0111048140,0111048142,0138455148,0139452179,0112531694,0112531692,''0110546720,'
+	@NC varchar(max) = '0110079408,'--'0111048140,0111048142,0138455148,0139452179,0112531694,0112531692,''0110546720,'
 
 create table #NCs(
 	NC varchar(max)
@@ -30,7 +30,7 @@ where 1 = 1
 	and a.Folio in (select * from #NCs)
 order by a.FechaRecibo desc
 
-select a.Folio,a.Tienda,SUM(a.DET_Cantidad)DET_Cantidad, SUM(a.DET_ImporteTotal)DET_ImporteTotal,a.Importe from Z_DV_Pendientes_Walmart_DescargaIncompleta a
+select a.Folio,a.Tienda,SUM(a.DET_Cantidad)DET_Cantidad, SUM(a.DET_ImporteTotal)DET_ImporteTotal,a.Importe Importe_Cabecero from Z_DV_Pendientes_Walmart_DescargaIncompleta a
 where 1 = 1
 	and a.Folio in (select * from #NCs)
 group by a.Folio,a.Importe,a.Tienda
@@ -56,5 +56,5 @@ return
 --	* 
 --from Z_DV_Pendientes_Walmart_DescargaIncompleta a
 --where 1 = 1
---	and a.Folio = '0138455148'
+--	and a.Folio = '0110079408'
 

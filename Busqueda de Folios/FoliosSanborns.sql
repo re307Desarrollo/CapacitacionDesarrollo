@@ -26,11 +26,12 @@ order by a.Devolucion, a.CB
 select 
 	a.Devolucion
 	,a.Sucursal
-	,SUM(a.TotalDet)
+	,SUM(a.TotalDet)TotalDet
+	,a.Total
 from Z_DV_Sanborns a
 where 1 = 1
 	and a.devolucion in (select * from #NCs)
-group by a.Devolucion,a.Sucursal
+group by a.Devolucion,a.Sucursal,a.Total
 --order by a.Devolucion desc
 
 select distinct 
