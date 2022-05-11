@@ -16,7 +16,7 @@
 	,@GenerarGuia_originExternalNumber varchar(max)= '1003'
 	,@GenerarGuia_origintaxPayerCode varchar(max) ='DIN8705087D7'
 	,@GenerarGuia_destinationtaxPayerCode varchar(max) ='XAXX010101000'
-	,@Order_Id varchar(max) = '4722152734964'
+	,@Order_Id varchar(max) = '4743047545076'
 	,@JsonMercancia varchar(max) = null
 	,@JSON varchar(max) = null
 
@@ -183,7 +183,24 @@ select
 			--,'02' as[labelDefinition.location.destination.homeAddress.address.stateCode]
 			--,'08-019' as[labelDefinition.location.destination.homeAddress.address.townshipCode]
 			,a.Shipping_Address_Zip as[labelDefinition.location.destination.homeAddress.address.zipCode]
-			,ISNULL(a.Shipping_Address_Phone,'NA') as[labelDefinition.location.destination.homeAddress.contact.cellPhone]
+			,(case
+				when a.Shipping_Address_Phone = '' then '5555555555'
+				when a.Shipping_Address_Phone is null then '5555555555'
+				when a.Shipping_Address_Phone is not null then (case
+																	when ISNUMERIC(a.Shipping_Address_Phone) = 1 then (case
+																																when LEN(a.Shipping_Address_Phone)>=20 then SUBSTRING(a.Shipping_Address_Phone,0,11)
+																																else a.Shipping_Address_Phone
+																															end)
+																	when ISNUMERIC(a.Shipping_Address_Phone) = 0 then(case
+																																when LEN(a.Shipping_Address_Phone)>=20 then (case
+																																													when ISNUMERIC(SUBSTRING(a.Shipping_Address_Phone,0,11)) = 0 then '5555555555'
+																																													else SUBSTRING(a.Shipping_Address_Phone,0,11)
+																																												  end)
+																																else '5555555555'
+																															end)
+																end)
+			  end
+			 )  as[labelDefinition.location.destination.homeAddress.contact.cellPhone]
 			,(case
 				when LEN(isnull((a.Shipping_Address_First_Name+' '+a.Shipping_Address_Last_Name),'')) >= 30 then SUBSTRING((a.Shipping_Address_First_Name+' '+a.Shipping_Address_Last_Name),0,29)
 				else ISNULL((a.Shipping_Address_First_Name+' '+a.Shipping_Address_Last_Name),'')
@@ -199,7 +216,19 @@ select
 			,(case
 				when a.Shipping_Address_Phone = '' then '5555555555'
 				when a.Shipping_Address_Phone is null then '5555555555'
-				else a.Shipping_Address_Phone
+				when a.Shipping_Address_Phone is not null then (case
+																	when ISNUMERIC(a.Shipping_Address_Phone) = 1 then (case
+																																when LEN(a.Shipping_Address_Phone)>=20 then SUBSTRING(a.Shipping_Address_Phone,0,11)
+																																else a.Shipping_Address_Phone
+																															end)
+																	when ISNUMERIC(a.Shipping_Address_Phone) = 0 then(case
+																																when LEN(a.Shipping_Address_Phone)>=20 then (case
+																																													when ISNUMERIC(SUBSTRING(a.Shipping_Address_Phone,0,11)) = 0 then '5555555555'
+																																													else SUBSTRING(a.Shipping_Address_Phone,0,11)
+																																												  end)
+																																else '5555555555'
+																															end)
+																end)
 			  end
 			 ) as [labelDefinition.location.destination.homeAddress.contact.telephone]
 			,@GenerarGuia_destinationtaxPayerCode as[labelDefinition.location.destination.homeAddress.contact.taxPayerCode]
@@ -227,4 +256,4 @@ select * from Shopify_Orders a
 where 1 = 1
 	and a.Order_Number = 19142
 
-select LEN('Luis Fernando  Lopez Rodriguez ')
+--select LEN('Luis Fernando  Lopez Rodriguez ')

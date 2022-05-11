@@ -85,7 +85,7 @@ and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transac
 
 
 select 'Devolucion Sucursal Folio unicos'
-select distinct Sucursal, Folio from Devoluciones_CancunAirport a
+select distinct Sucursal, Folio from Devoluciones_SotanoCoy a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = @Folio
@@ -98,7 +98,7 @@ where 1 = 1
 			and b.Sucursal = a.Sucursal
 			)
 select 'Devolucion informacion completa'
-select * from Devoluciones_CancunAirport a
+select * from Devoluciones_SotanoCoy a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = '456'
@@ -111,7 +111,7 @@ where 1 = 1
 			)
 
 select 'Reporte acumulado'
-select * from Devoluciones_CancunAirport_Reporte_Acumulado a
+select * from Devoluciones_SotanoCoy_Reporte_Acumulado a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -124,7 +124,7 @@ where 1 = 1
 			--and a.Sucursal = b.Sucursal
 			)
 select 'Reporte acomulado por Item'
-select * from Devoluciones_CancunAirport_Reporte_Acumulado_porItem a
+select * from Devoluciones_SotanoCoy_Reporte_Acumulado_porItem a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -157,7 +157,7 @@ where 1 = 1
 if @deleteDropbox = 1
 	begin
 		delete a
-		from Devoluciones_CancunAirport a
+		from Devoluciones_SotanoCoy a
 		where 1 = 1
 			--and Sucursal = @Sucursal
 			--and Folio = @Folio
@@ -169,7 +169,7 @@ if @deleteDropbox = 1
 					and a.Sucursal = b.Sucursal)
 
 		delete a
-		from Devoluciones_CancunAirport_Reporte_Acumulado a
+		from Devoluciones_SotanoCoy_Reporte_Acumulado a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
@@ -182,7 +182,7 @@ if @deleteDropbox = 1
 					)
 
 		delete a
-		from Devoluciones_CancunAirport_Reporte_Acumulado_porItem a
+		from Devoluciones_SotanoCoy_Reporte_Acumulado_porItem a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
