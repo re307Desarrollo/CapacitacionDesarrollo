@@ -111,7 +111,7 @@ where 1 = 1
 			)
 
 select 'Reporte acumulado'
-select * from Devoluciones_SotanoCoy_Reporte_Acumulado a
+select * from Devoluciones_COMMEX_Reporte_Acumulado a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
@@ -124,14 +124,26 @@ where 1 = 1
 			--and a.Sucursal = b.Sucursal
 			)
 select 'Reporte acomulado por Item'
-select * from Devoluciones_SotanoCoy_Reporte_Acumulado_porItem a
+select * from Devoluciones_COMMEX_Reporte_Acumulado_porItem a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
 	--and Folio = '456'
 		and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
-			and a.cliente = b.Oracle
+			and a.cliente = CONVERT(varchar,b.Oracle)
+			--and a.Folio like '%'+b.Folio+'%'
+			and a.Folio = b.Folio
+			--and a.Sucursal = b.Sucursal
+			)
+select distinct a.folio from Devoluciones_COMMEX_Reporte_Acumulado_porItem a
+where 1 = 1
+	--and cliente = @Oracle
+	--and Folio = @Folio
+	--and Folio = '456'
+		and exists (select * from [EliminarDropbox] b
+		where 1 = 1	
+			and a.cliente = CONVERT(varchar,b.Oracle)
 			--and a.Folio like '%'+b.Folio+'%'
 			and a.Folio = b.Folio
 			--and a.Sucursal = b.Sucursal
@@ -156,33 +168,33 @@ where 1 = 1
 
 if @deleteDropbox = 1
 	begin
-		delete a
-		from Devoluciones_SotanoCoy a
-		where 1 = 1
-			--and Sucursal = @Sucursal
-			--and Folio = @Folio
-			and exists (select * from [EliminarDropbox] b
-				where 1 = 1	
-					--and a.Folio like '%'+b.Folio+'%'
-					and a.Folio = b.Folio
-					--and b.Folio = REPLACE(a.Folio,' ','')
-					and a.Sucursal = b.Sucursal)
+		--delete a
+		--from Devoluciones_SotanoCoy a
+		--where 1 = 1
+		--	--and Sucursal = @Sucursal
+		--	--and Folio = @Folio
+		--	and exists (select * from [EliminarDropbox] b
+		--		where 1 = 1	
+		--			--and a.Folio like '%'+b.Folio+'%'
+		--			and a.Folio = b.Folio
+		--			--and b.Folio = REPLACE(a.Folio,' ','')
+		--			and a.Sucursal = b.Sucursal)
+
+		--delete a
+		--from Devoluciones_SotanoCoy_Reporte_Acumulado a
+		--where 1 = 1
+		--	--and cliente = @Oracle
+		--	--and Folio = @Folio
+		--	and exists (select * from [EliminarDropbox] b
+		--		where 1 = 1	
+		--			and a.cliente = b.Oracle
+		--			--and a.Folio like '%'+b.Folio+'%'
+		--			and a.Folio = b.Folio
+		--			--and a.Sucursal = b.Sucursal
+		--			)
 
 		delete a
-		from Devoluciones_SotanoCoy_Reporte_Acumulado a
-		where 1 = 1
-			--and cliente = @Oracle
-			--and Folio = @Folio
-			and exists (select * from [EliminarDropbox] b
-				where 1 = 1	
-					and a.cliente = b.Oracle
-					--and a.Folio like '%'+b.Folio+'%'
-					and a.Folio = b.Folio
-					--and a.Sucursal = b.Sucursal
-					)
-
-		delete a
-		from Devoluciones_SotanoCoy_Reporte_Acumulado_porItem a
+		from Devoluciones_COMMEX_Reporte_Acumulado_porItem a
 		where 1 = 1
 			--and cliente = @Oracle
 			--and Folio = @Folio
