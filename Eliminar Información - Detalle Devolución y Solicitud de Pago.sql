@@ -85,7 +85,7 @@ and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transac
 
 
 select 'Devolucion Sucursal Folio unicos'
-select distinct Sucursal, Folio from Devoluciones_SotanoCoy a
+select distinct Sucursal, Folio from Devoluciones_PromotoraMusical a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = @Folio
@@ -98,7 +98,7 @@ where 1 = 1
 			and b.Sucursal = a.Sucursal
 			)
 select 'Devolucion informacion completa'
-select * from Devoluciones_SotanoCoy a
+select * from Devoluciones_PromotoraMusical a
 where 1 = 1
 	--and Sucursal = @Sucursal
 	--and Folio = '456'
@@ -111,17 +111,17 @@ where 1 = 1
 			)
 
 select 'Reporte acumulado'
-select * from Devoluciones_COMMEX_Reporte_Acumulado a
+select * from Devoluciones_PromotoraMusical a
 where 1 = 1
 	--and cliente = @Oracle
 	--and Folio = @Folio
 	--and Folio = '456'
 	and exists (select * from [EliminarDropbox] b
 		where 1 = 1	
-			and a.cliente = b.Oracle
+			--and a.cliente = b.Oracle
 			--and a.Folio like '%'+b.Folio+'%'
 			and a.Folio = b.Folio
-			--and a.Sucursal = b.Sucursal
+			and a.Sucursal = b.Sucursal
 			)
 select 'Reporte acomulado por Item'
 select * from Devoluciones_COMMEX_Reporte_Acumulado_porItem a
