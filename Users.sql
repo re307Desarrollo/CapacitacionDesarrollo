@@ -1,7 +1,7 @@
 ﻿---Correr en servidor de apps
 use [Global]
 declare 
-	@Nombre varchar(max) = 'samantha' --Nombre del usuario 
+	@Nombre varchar(max) = 'veronica' --Nombre del usuario 
 			  ,@VERIFICAR INT = 1 --1 verificas, 2 desbloqueas
 		,@Accion varchar(max)= 'f' --F:Logistica Directa --D:Logistica Inversa
 if @VERIFICAR = 1

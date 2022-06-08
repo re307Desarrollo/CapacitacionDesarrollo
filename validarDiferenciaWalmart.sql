@@ -4,9 +4,9 @@
 )
 
 --BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\8.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
-BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\03.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\04.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\05.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
+BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\06.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 
 select 
 	a.Fecha
