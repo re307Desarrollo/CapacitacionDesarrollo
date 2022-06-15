@@ -67,7 +67,7 @@ where 1 = 1
 			and a.Sucursal = b.Sucursal
 		)
 --and a.[Nota Crédito] is not null
-and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transacciones ya estan en Oreacle
+--and a.ImportePortalesWeb is null--si al quitar este filtro aparecen, las transacciones ya estan en Oreacle
 --and a.Folio = '456'
 --and cr.Razon_Social != 'CASA LEY, SAPI DE CV'
 
