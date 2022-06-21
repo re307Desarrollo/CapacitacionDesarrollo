@@ -14,7 +14,7 @@ select
 	into #Z_VE_Walmart
 from Z_VE_Walmart a
 where 1 = 1
-	and a.Fecha >= '2022-03-01'
+	and a.Fecha >= '2022-04-01'
 	--and a.Fecha < '2021-10-01'
 group by a.Fecha
 
