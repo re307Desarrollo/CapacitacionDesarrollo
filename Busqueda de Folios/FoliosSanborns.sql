@@ -1,5 +1,5 @@
 ﻿declare
-	@NC varchar(max) = '4674985,4674981,4674985,'--'21022731,21022680,21022662,21022643,'
+	@NC varchar(max) = '40913542,46117546,42813718,44700083,43751360,43865210,44582986,43640329,66008603,'--'21022731,21022680,21022662,21022643,'
 
 create table #NCs(
 	NC varchar(max)
@@ -23,6 +23,8 @@ where 1 = 1
 	--and a.Devolucion = '21022643'
 order by a.Devolucion, a.CB 
 
+
+select 'Z_DV_Sanborns' tabla
 select 
 	a.Devolucion
 	,a.Sucursal
@@ -34,6 +36,8 @@ where 1 = 1
 group by a.Devolucion,a.Sucursal,a.Total
 --order by a.Devolucion desc
 
+
+select 'Z_DV_Sanborns' tabla
 select distinct 
 	a.Devolucion
 	,a.FechaSubida
@@ -43,8 +47,11 @@ where 1 = 1
 	and a.devolucion in (select * from #NCs)
 order by a.FechaSubida,a.Devolucion desc
 
+
+select '#foliosEncontrados' tabla
 select * from #foliosEncontrados
 
+select 'foliosNoEncontrados' tabla
 select * from #NCs a
 where 1 = 1
 	and not exists(select * from #foliosEncontrados b
@@ -56,6 +63,12 @@ select 'Z_DV_Sanborns_DescargaIncompleta' tabla
 select * from Z_DV_Sanborns_DescargaIncompleta a
 where 1 = 1
 	and a.devolucion in (select * from #NCs)
+
+
+select 'ControlDocumental_LI' tabla
+select * from ControlDocumental_LI a
+where 1 = 1
+	and a.Folio in (select b.NC from #NCs b)
 
 drop table #NCs,#foliosEncontrados
 

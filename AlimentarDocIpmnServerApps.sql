@@ -224,14 +224,14 @@ end
 
 	return
 
-select * from Matriz_Seguimiento_Control_Documental_Detalle_LD
-where 1 = 1
-	and Documento = '6941382'
-	and Item = '07085613.2003'
+--select * from Matriz_Seguimiento_Control_Documental_Detalle_LD
+--where 1 = 1
+--	and Documento = '6941382'
+--	and Item = '07085613.2003'
 
-select * 
---delete
-from Control_Entregas_Concentrado
-where 1 = 1
-	and Docto_Num = '7018783'
-	and No_Cliente is null
+--select * 
+----delete
+--from Control_Entregas_Concentrado
+--where 1 = 1
+--	and Docto_Num = '7018783'
+--	and No_Cliente is null

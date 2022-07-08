@@ -10,7 +10,7 @@ Inventario varchar(max),
 )
 
 --BULK INSERT #VentaWalmart FROM 'H:\Desarrollo\AuditoriaVenta\8.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
-BULK INSERT #VentaCF FROM 'H:\Desarrollo\Venta CityFresko\CIF_D202202_6.csv' WITH (FIELDTERMINATOR= ',',FIRSTROW = 2);
+BULK INSERT #VentaCF FROM 'H:\Desarrollo\Venta CityFresko\CIF_D202207_6.csv' WITH (FIELDTERMINATOR= ',',FIRSTROW = 2);
 
 
 
@@ -69,4 +69,4 @@ order by a.Fecha desc
 --	and a.FECHA = '2022-02-07'
 --order by a.UPC desc, a.STR_ID desc
 
---drop table #VentaCF
+drop table #VentaCF, #data

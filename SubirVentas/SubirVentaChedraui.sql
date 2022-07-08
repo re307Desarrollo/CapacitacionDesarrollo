@@ -32,7 +32,7 @@
 --BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-01-02.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 --BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-01-03.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
 --BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-01-04.txt' WITH (FIELDTERMINATOR= '	',FIRSTROW = 1);
-BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-04-04.txt' WITH (FIELDTERMINATOR= '|',FIRSTROW = 1);
+BULK INSERT #VentaChedraui FROM 'H:\Desarrollo\Venta Chedraui\2022-07-05.txt' WITH (FIELDTERMINATOR= '|',FIRSTROW = 1);
 
 --select * from #VentaChedraui
 

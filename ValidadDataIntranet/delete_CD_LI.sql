@@ -1,7 +1,7 @@
 declare 
 	@Accion int = 0
-	,@Folio varchar(max) = ''
-	,@Oracle int = 0
+	,@Folio varchar(max) = '180515'
+	,@Oracle int = 150162
 
 if @Accion = 0
 begin

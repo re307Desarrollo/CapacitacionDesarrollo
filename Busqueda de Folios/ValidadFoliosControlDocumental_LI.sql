@@ -1,5 +1,5 @@
 ﻿declare
-	@NC varchar(max) = '4209161332,4212337533,4209124110,4209065442,4210033773,4210959073,4210224014,4209750009,4211209932,4207849662,4209350186,4211325608,4209355755,4209225478,4210030419,4209481159,4209569832,4209074184,4210331632,4211198831,4209220825,4208566860,4210715148,4210351091,4207323375,4211201223,4210351046,4209422257,4208983134,4210178374,4209082722,4208273105,4207567366,4208897852,4209569708,4211207458,4210575602,4211206679,480903073142,'
+	@NC varchar(max) = '156019,'
 
 create table #NCs(
 	NC varchar(max)
@@ -15,20 +15,20 @@ begin
 end
 
 
-select * from ControlDocumental_LI a
-where 1 = 1
-and a.Folio in ('4212337533','4211206679','4210030419','4209225478')
-order by a.Folio desc 
+--select * from ControlDocumental_LI a
+--where 1 = 1
+--and a.Folio in ('4212337533','4211206679','4210030419','4209225478')
+--order by a.Folio desc 
 
 select * from ControlDocumental_LI a
 where 1 = 1
 and a.Folio in (select * from #NCs)
 order by a.Folio desc 
 
-select * from ControlDocumental_LI a
-where 1 = 1
-and a.Folio = '4212337533'
-order by a.Folio desc 
+--select * from ControlDocumental_LI a
+--where 1 = 1
+--and a.Folio = '4212337533'
+--order by a.Folio desc 
 
 
 
@@ -38,68 +38,69 @@ from Maestro_Sucursales
 where 1 = 1
 and Modulo = 'Devolución'
 
-select * from #NCs a
-where 1 = 1
-	and a.NC = '4209124110'
+--select * from #NCs a
+--where 1 = 1
+--	and a.NC = '4209124110'
 
 
 select distinct
 	b.Oracle
 	,b.Sucursal
 	,c.Den_Comer
-	,a.NroReferen
-	,a.CentroOrig
-	,a.FechaCreac
-from Z_DV_Liverpool a
+	,a.FOLIO
+	,a.SUCURSAL
+	,a.FECHA_ALTA
+	,a.FechaSubida
+from Z_DV_CityFresko a
 
 left outer join #Maestro_Sucursales b
-on a.CentroOrig = b.Sucursal
-and 'Liverpool' = b.Cadena
+on a.SUCURSAL= b.Sucursal
+and 'Cityfresko' = b.Cadena
 
 left outer join E_Carta_de_Rutas c
 on b.Oracle = c.No_Cliente
 
 where 1 = 1
-	and a.NroReferen in (select * from #NCs)
+	and a.FOLIO in (select * from #NCs)
 	--and a.NroReferen = '480903073142'
-order by a.NroReferen desc
+order by a.FOLIO desc
 
 
-select distinct
-	b.Oracle
-	,b.Sucursal
-	,c.Den_Comer
-	,a.NroReferen
-	,a.CentroOrig
-	,a.FechaCreac
-from Z_DV_Liverpool a
+--select distinct
+--	b.Oracle
+--	,b.Sucursal
+--	,c.Den_Comer
+--	,a.NroReferen
+--	,a.CentroOrig
+--	,a.FechaCreac
+--from Z_DV_Liverpool a
 
-left outer join #Maestro_Sucursales b
-on a.CentroOrig = b.Sucursal
-and 'Liverpool' = b.Cadena
+--left outer join #Maestro_Sucursales b
+--on a.CentroOrig = b.Sucursal
+--and 'Liverpool' = b.Cadena
 
-left outer join E_Carta_de_Rutas c
-on b.Oracle = c.No_Cliente
+--left outer join E_Carta_de_Rutas c
+--on b.Oracle = c.No_Cliente
 
-where 1 = 1
-	and a.NroReferen in (select * from #NCs)
-	and a.NroReferen = '4212337533'
-order by a.NroReferen desc
-
-select distinct
-	c.Den_Comer
-from Z_DV_Liverpool a
-
-left outer join #Maestro_Sucursales b
-on a.CentroOrig = b.Sucursal
-and 'Liverpool' = b.Cadena
-
-left outer join E_Carta_de_Rutas c
-on b.Oracle = c.No_Cliente
-
-where 1 = 1
-	and a.NroReferen in (select * from #NCs)
+--where 1 = 1
+--	and a.NroReferen in (select * from #NCs)
+--	and a.NroReferen = '4212337533'
 --order by a.NroReferen desc
+
+--select distinct
+--	c.Den_Comer
+--from Z_DV_Liverpool a
+
+--left outer join #Maestro_Sucursales b
+--on a.CentroOrig = b.Sucursal
+--and 'Liverpool' = b.Cadena
+
+--left outer join E_Carta_de_Rutas c
+--on b.Oracle = c.No_Cliente
+
+--where 1 = 1
+--	and a.NroReferen in (select * from #NCs)
+----order by a.NroReferen desc
 
 
 --select
